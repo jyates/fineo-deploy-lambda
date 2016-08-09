@@ -1,7 +1,8 @@
 
 class ArgManager
 
-  def initialize()
+  def initialize(testing)
+    @testing = testing
     @opts = []
     @values = {}
   end
