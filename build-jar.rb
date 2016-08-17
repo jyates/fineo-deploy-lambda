@@ -14,6 +14,7 @@ $PROP_FILE = "fineo-lambda.properties"
 require 'util/files'
 require 'source_handler'
 require 'ostruct'
+require 'optparse'
 require 'sources'
 require 'json'
 
@@ -32,7 +33,7 @@ OptionParser.new do |opts|
   end
 
   opts.on("--dry-run", "Enable dry run") do |v|
-    options.dryrun = v
+    options.dryrun = true
   end
 
   opts.on("--testing [PREFIX]", "Build the parameters for a testing run") do |v|
@@ -53,17 +54,20 @@ end.parse!(ARGV)
 # Array of hashes
 file = File.read(options.source)
 sources = JSON.parse(file)
-
+# ensure its an array
+sources = [sources] if sources.class == Hash
 managers = []
-sources.each{|source|
-  name = source["source"]
-  info = source["info"]
+
+sources.each{|entry|
+  source = entry.shift
+  name = source[0]
+  info = source[1]["info"]
   managers << SOURCES[name].call(info)
 }
 
 common_props = {}
 managers.each{|source|
-  common_props.merge!(build_properties(source, options.testing, ARGV))
+  common_props.merge! build_properties(source, options.testing, ARGV)
 }
 
 managers.each{|source|
@@ -71,10 +75,13 @@ managers.each{|source|
 }
 
 # Done if we are dry-running
-exit if options.dryrun.nil?
+exit if options.dryrun
 
+puts "Updating jars..."
 tmp = "tmp"
-Dir.mkdir(tmp)
+out = "out"
+create_tmp tmp
+create_tmp out
 managers.each{|source|
-  update_jars(tmp, source, common_props, options.verbose)
+  update_jars(tmp, out, source, common_props, options.verbose)
 }

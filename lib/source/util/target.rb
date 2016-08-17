@@ -3,11 +3,12 @@ require 'build/arg_opt'
 
 class Target
 
-  attr_reader :name, :jar, :args
+  attr_reader :name, :jar, :args, :jarname
 
-  def initialize(name, jar)
+  def initialize(name, dir, jarname)
     @name = name
-    @jar = jar
+    @jarname = jarname
+    @jar = File.join(dir, jarname)
     @args = []
   end
 
@@ -19,9 +20,13 @@ class Target
     args << ArgOpts.prefix(property_name, default_value, description)
   end
 
-  def properties?(prefix)
+  def addAll(options)
+    @args += options
+  end
+
+  def properties?(prefix="fineo")
     props = {}
-    opts.each{|opt|
+    @args.each{|opt|
       props["#{prefix}.#{opt.key}"] = opt.value
     }
     return props

@@ -7,7 +7,7 @@ Dir["#{__dir__}/source/*.rb"].each { |f|
   # enable simple loading based on the name of the file we load
   source = File.basename(f, ".rb")
   clazz = source.capitalize
-  sources[source] = lambda {|info|
+  SOURCES[source] = lambda {|info|
     Object.const_get(clazz).new(info)
   }
 }

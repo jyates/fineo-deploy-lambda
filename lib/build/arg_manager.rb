@@ -1,8 +1,7 @@
 
 class ArgManager
 
-  def initialize(testing)
-    @testing = testing
+  def initialize
     @opts = []
   end
 
@@ -19,7 +18,7 @@ class ArgManager
       opt.value = opt.field_rename.call(test_prefix) unless test_prefix.nil?
     }
     # the values that live across all properties
-    values = []
+    values = {}
     values["integration.test.prefix"] = test_prefix unless test_prefix.nil?
     values
   end
