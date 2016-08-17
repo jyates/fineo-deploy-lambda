@@ -18,6 +18,3 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk (~> 2)
   rubyzip (>= 1.0.0)
-
-BUNDLED WITH
-   1.12.1
