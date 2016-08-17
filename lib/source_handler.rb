@@ -6,19 +6,23 @@ require 'zip'
 module SourceHandler
 
   def build_properties(source, testing, args)
+    # add the options from each source
     jars = source.targets?
     manager = ArgManager.new
     jars.each{|jar|
       manager.addAll(jar.args)
     }
+
+    # parse the options into the manager, which sets the options
     parser = OptionParser.new do |opts|
       manager.getOpts(opts)
     end
-    # at this point each of the jars should have the properties set
     parser.parse(args)
+
+    manager.build(testing)
   end
 
-  def print_target_properties(source, verbose=nil)
+  def print_target_properties(source, common_props, verbose=nil)
     return if verbose.nil?
 
     jars = source.targets?
@@ -29,16 +33,20 @@ module SourceHandler
       jar.properties.each{|k,v|
         puts "\t\t#{k} => #{v}"
       }
+      common_props.each{|k,v|
+        puts "\t\t#{k} => #{v}"
+      }
     }
   end
 
-  def update_jars(tmp, source, verbose=nil)
+  def update_jars(tmp, source, common_props, verbose=nil)
     source.targets?.each{|target|
       # unzip the jar into a temp directory
       `cd #{tmp}; jar -xf #{target.jar}`
 
       # write the properties into the property file
-      hash = target.properties
+      hash = target.properties?
+      hash.merge!(common_properties)
       out = File.join(tmp, $PROP_FILE)
       File.open(out, 'w'){|file|
         hash.each{|k,v|
@@ -47,7 +55,7 @@ module SourceHandler
       }
 
       unless verbose.nil?
-        puts "Jar properties: #{target.jar}"
+        puts "Properties: #{target.jar}"
         File.open(out, "r") do |f|
           f.each_line do |line|
             puts "\t#{line}"
