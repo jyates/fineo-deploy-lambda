@@ -24,8 +24,8 @@ include SourceHandler
 
 options = OpenStruct.new
 OptionParser.new do |opts|
-  opts.banner = "Usage: template.rb [options]"
-  opts.separator "Liquid based templating for the Fineo API"
+  opts.banner = "Usage: build-jar.rb [options]"
+  opts.separator "Build lambda function jars"
   opts.separator "  Options:"
 
   opts.on("--source FILE", "JSON file defining the sources we will transform") do |source|
