@@ -32,6 +32,10 @@ OptionParser.new do |opts|
     options.source = source
   end
 
+  opts.on("--output FILE", "JSON file with the list of updated jars") do |out|
+    options.out = out
+  end
+
   opts.on("--dry-run", "Enable dry run") do |v|
     options.dryrun = true
   end
@@ -78,10 +82,22 @@ managers.each{|source|
 exit if options.dryrun
 
 puts "Updating jars..."
-tmp = "tmp"
-out = "out"
+tmp = "tmp/open"
+out = "tmp/out"
 create_tmp tmp
 create_tmp out
+
+jars = []
 managers.each{|source|
-  update_jars(tmp, out, source, common_props, options.verbose)
+  jars += update_jars(tmp, out, source, common_props, options.verbose)
 }
+
+if options.out.nil?
+  puts "Final jars available at:"
+  puts jars
+else
+  File.open(options.out,"w") do |f|
+    f.write(jars.to_json)
+  end
+  puts "Updated jars in json file: '#{options.out}'"
+end

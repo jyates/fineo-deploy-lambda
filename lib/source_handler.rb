@@ -28,8 +28,8 @@ module SourceHandler
     jars = source.targets
     puts "Source: #{source.class}"
     jars.each{|jar|
-      puts "\t #{jar.name}"
-      puts "\t Properties:"
+      puts "\t#{jar.name}"
+      puts "\t   Properties:"
       jar.properties?.each{|k,v|
         puts "\t\t#{k} => #{v}"
       }
@@ -40,6 +40,7 @@ module SourceHandler
   end
 
   def update_jars(tmp, out, source, common_properties, verbose=nil)
+    jars = []
     source.targets.each{|target|
       # unzip the jar into a temp directory
       unpack = File.join(tmp, source.class.name, target.name)
@@ -72,8 +73,10 @@ module SourceHandler
 
       # rezip the jar
       ZipFileGenerator.new(unpack, outjar).write
-      puts "\tUpdated: #{outjar}"
+      puts "  Updated: #{outjar}" unless verbose.nil?
+      jars << outjar
     }
+    jars
   end
 
   def create_tmp(dir)
@@ -81,6 +84,6 @@ module SourceHandler
       out = "#{dir}.old.#{Time.now.to_i}"
       FileUtils.mv(dir,out)
     end
-    Dir.mkdir dir
+    FileUtils.mkdir_p dir
   end
 end
