@@ -1,10 +1,12 @@
 
-class StreamIngest
+require 'sources/definitions/stream_definitions'
+
+class StreamIngest < PropertyModule
 
   VERSION = "2.0-SNAPSHOT"
 
   def initialize(info)
     super(info["dir"], "stream-processing", VERSION)
-    set_targets(info["targets"], SchemaDefinitions::DEFINITIONS)
+    set_targets(info["targets"], StreamDefinitions::DEFINITIONS)
   end
 end

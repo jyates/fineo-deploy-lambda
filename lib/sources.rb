@@ -15,3 +15,8 @@ Dir["#{__dir__}/sources/type/*.rb"].each { |f|
     Object.const_get(clazz).new(info)
   }
 }
+
+Definitions = {
+  "Schema" => SchemaDefinitions::DEFINITIONS,
+  "StreamIngest" => StreamDefinitions::DEFINITIONS
+}

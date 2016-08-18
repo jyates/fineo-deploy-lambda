@@ -1,11 +1,16 @@
 
-module Source
-  def self.load(arr, path)
+class SourceLoader
+  def initialize(arr, clazz)
+    @arr = arr
+    @moduleName = clazz.name
+  end
+
+  def load(path)
     Dir["#{__dir__}/#{path}/*.rb"].each { |f|
       require f
       source = File.basename(f, ".rb")
       clazz = source.split('_').collect!{ |w| w.capitalize }.join
-      arr << Object.const_get("SchemaDefinitions::#{clazz}").new()
+      @arr << Object.const_get("#{@moduleName}::#{clazz}").new()
     }
   end
 end
