@@ -16,10 +16,10 @@ class LambdaAws
                     validate_params: true)
   end
 
-  def get_properties(func)
+  def get_function_state(func)
   end
 
-  def deploy(jar, lambda)
+  def deploy(jar, func)
     # Actually create the lambda function
     didUpload = false
     uploaded = @client.list_functions({})

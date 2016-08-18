@@ -11,6 +11,7 @@ File.expand_path(File.join(__dir__, "lib")).tap {|pwd|
 require 'optparse'
 require 'json'
 require 'deploy/deploying'
+require 'deploy/aws/lambda'
 
 options = OpenStruct.new
 options.region = 'us-east-1'
@@ -57,5 +58,6 @@ jars = JSON.parse(file)
 
 puts "Deploying jars: #{jars}" if options.verbose
 defs = find_definitions(jars)
-validate_states(defs)
-deploy(defs, options.bucket) unless options.dryrun
+lambda = LambdaAws.new(options.region)
+validate_states(lambda, defs)
+deploy(lambda, defs, options.bucket) unless options.dryrun

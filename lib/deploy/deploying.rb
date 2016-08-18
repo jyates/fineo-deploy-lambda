@@ -29,17 +29,18 @@ module Deploying
 
   # ensure that the current properties associated with the definition match those, if the
   # function has already been deployed
-  def validate_definitions(defs)
+  def validate_definitions(lambda, defs)
     defs.each{|d|
       definition = d.def
-      state = Lambda.get_function_state(definition)
+      func = definition.func
+      state = lambda.get_function_state(func)
       # haven't deployed this function yet
       next if state == NOT_PRESENT
       validate_state(state, definition)
     }
   end
 
-  def deploy(defs, bucket)
+  def deploy(lambda, defs, bucket)
     date_dir = Time.now
     upload = S3Upload.new(options.region)
     defs.each{|d|
@@ -48,7 +49,7 @@ module Deploying
       jar_name = File.basename(jar)
       target = File.join(d.type, date_dir, name, jar_name)
       path = upload.send(jar, bucket, target, options.verbose)
-      update_lamda(path, definition.func)
+      lambda.deploy(path, definition.func)
     }
   end
 
@@ -57,8 +58,7 @@ private
   def update_lambda(path, func)
   end
 
-  def validate_state(state, definition)
-    func = definition.func
+  def validate_state(state, func)
     verify(definition.name, "memory" func.memory, state.memory)
     verify(definition.name, "timeout" func.timeout, state.timeout)
     verify(definition.name, "role" func.role, state.role)
