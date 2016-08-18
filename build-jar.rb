@@ -87,17 +87,25 @@ out = "tmp/out"
 create_tmp tmp
 create_tmp out
 
-jars = []
+types = []
+info = {
+  "types" => types
+}
+
 managers.each{|source|
-  jars += update_jars(tmp, out, source, common_props, options.verbose)
+  name = source.class.name
+  types << name
+  source_info = update_jars(tmp, out, source, common_props, options.verbose)
+  info[name] = source_info
 }
 
 if options.out.nil?
+  require 'pp'
   puts "Final jars available at:"
-  puts jars
+  pp(info)
 else
   File.open(options.out,"w") do |f|
-    f.write(jars.to_json)
+    f.write(info.to_json)
   end
   puts "Updated jars in json file: '#{options.out}'"
 end

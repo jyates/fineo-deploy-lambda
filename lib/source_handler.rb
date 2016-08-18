@@ -40,7 +40,7 @@ module SourceHandler
   end
 
   def update_jars(tmp, out, source, common_properties, verbose=nil)
-    jars = []
+    jars = {}
     source.targets.each{|target|
       # unzip the jar into a temp directory
       unpack = File.join(tmp, source.class.name, target.name)
@@ -74,7 +74,7 @@ module SourceHandler
       # rezip the jar
       ZipFileGenerator.new(unpack, outjar).write
       puts "  Updated: #{outjar}" unless verbose.nil?
-      jars << outjar
+      jars[target.name] = outjar
     }
     jars
   end

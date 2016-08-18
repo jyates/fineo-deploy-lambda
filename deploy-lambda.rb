@@ -38,4 +38,3 @@ file = File.read(options.source)
 jars = JSON.parse(file)
 
 puts "Deploying jars: #{jars}" if options.verbose
-

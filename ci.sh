@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-current=${PWD##*/}
+current="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 input=${current}/input.json
 output=${current}/output.json
