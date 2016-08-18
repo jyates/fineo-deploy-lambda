@@ -1,0 +1,10 @@
+[
+  {
+    "schema" : {
+      "info" : {
+        "dir" : "/Users/jyates/dev/iot-startup/schema/schema-lambda/target",
+        "targets" : ["org", {"metric" : ["field"]}]
+      }
+    }
+  }
+]
