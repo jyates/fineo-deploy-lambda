@@ -50,7 +50,27 @@ class LambdaAws
   end
 
   def update_config(function)
-    @client.update_function_configuration(function.to_aws_hash())
+    version = @client.update_function_configuration(function.to_aws_hash()).version
+  end
+
+  def promote(definition, stage, version)
+    func = definition.func
+    begin
+      alias = @client.get_alias({function_name: func.name, alias: stage})
+      # alias exists, so move it to the new version
+      @client.update_alias({function_name: func.name,
+                            alias: stage,
+                            function_version: version,
+                            description: "Updating #{stage} to #{version} from "+
+                              "#{alias.function_version"})
+    rescue Aws::Lambda::Errors::ResourceNotFoundException
+      # alias doesn't exist, so just create it
+      @client.create_alias({function_name: func.name,
+                              alias: stage,
+                              function_version: version,
+                              description: "Promoting #{version} to #{stage} - no previous " +
+                                "version found for alias"})
+    end
   end
 
 private
@@ -61,19 +81,19 @@ private
 
     hash = function.to_aws_hash
     hash[:code] = code
-    hash[:publish] = false
+    hash[:publish] = true
     pp hash if @verbose
-    @client.create_function(hash)
+    @client.create_function(hash).version
   end
 
   def update(function, code, conf)
     puts "Updating #{function.name}"
     options = {
       function_name: function.name,
-      publish: false
+      publish: true
     }
     options.merge! code
     @client.update_function_code(options)
-    update_config(function)
+    version = update_config(function)
   end
 end

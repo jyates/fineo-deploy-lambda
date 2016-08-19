@@ -53,6 +53,11 @@ OptionParser.new do |opts|
     options.verbose = true
     options.verbose2 = true
   end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
 end.parse!(ARGV)
 
 # Array of hashes
