@@ -1,11 +1,11 @@
 
 require 'sources'
 require 'ostruct'
-require 'deploy/lambda'
+require 'deploy/aws/s3_upload'
 
 module Deploying
 
-  def find_definitions(jars)
+  def find_definitions(jars, options)
     defs = []
     jars["types"].each{|type|
       d = Definitions[type]
@@ -35,34 +35,45 @@ module Deploying
       func = definition.func
       state = lambda.get_function_state(func)
       # haven't deployed this function yet
-      next if state == NOT_PRESENT
+      next if state == LambdaAws::DOES_NOT_EXIST
       validate_state(state, definition)
     }
   end
 
-  def deploy(lambda, defs, bucket)
-    date_dir = Time.now
-    upload = S3Upload.new(options.region)
+  def deploy(lambda, defs, options)
+    if options.config_only
+      update_config(lambda, defs)
+      return
+    end
+
+    bucket = options.bucket
+    date_dir = Time.now.to_s
+    upload = S3Upload.new(options)
     defs.each{|d|
       definition = d.def
       jar = d.jar
       jar_name = File.basename(jar)
-      target = File.join(d.type, date_dir, name, jar_name)
-      path = upload.send(jar, bucket, target, options.verbose)
+      target = File.join(d.type, date_dir, d.name, jar_name)
+      path = upload.send(jar, bucket, target)
       lambda.deploy(path, definition.func)
     }
   end
 
 private
 
-  def update_lambda(path, func)
+  def update_config(lambda, defs)
+    defs.each{|d|
+      puts "Updating config for #{d.type} - #{d.name}"
+      lambda.update_config(d.def.func)
+    }
   end
 
-  def validate_state(state, func)
-    verify(definition.name, "memory" func.memory, state.memory)
-    verify(definition.name, "timeout" func.timeout, state.timeout)
-    verify(definition.name, "role" func.role, state.role)
-    verify(definition.name, "handler" func.handler, state.handler)
+  def validate_state(state, definition)
+    func = definition.func
+    verify(definition.name, "memory", func.memory, state.memory_size)
+    verify(definition.name, "timeout", func.timeout, state.timeout)
+    verify(definition.name, "role", func.role, state.role)
+    verify(definition.name, "handler", func.handler, state.handler)
   end
 
   def verify(func_name, name, expected, actual)

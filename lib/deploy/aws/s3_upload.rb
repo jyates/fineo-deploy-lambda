@@ -6,25 +6,28 @@ class S3Upload
 
   include InternalUtils
 
-  def initialize(region)
-    @creds = load_creds
-    @s3 = Aws::S3::Resource.new(region: region,
+  def initialize(options)
+    @creds = load_creds(options.credentials)
+    @s3 = Aws::S3::Resource.new(region: options.region,
                                 access_key_id: @creds['access_key_id'],
                                 secret_access_key: @creds['secret_access_key'],
-                                validate_params: true)
+                                validate_params: true,
+                                log_level: :debug)
+    @verbose = options.verbose
   end
 
-  def send(jar, bucket, target, verbose=false)
-    puts "Uploading #{jar} \n\t -> #{s3_full_name}...." if verbose
+  def send(jar, bucket, target)
+    jar = File.absolute_path(jar)
+    s3_full_name = File.join("s3://", bucket, target)
+    puts "Uploading #{jar} \n\t -> #{s3_full_name}...." if @verbose
 
-    obj = @s3.bucket(bucket).object(target)
-    # generally this throws exceptions on failure
-    jarPath = Pathname.new(jar)
-    success = obj.upload_file(jarPath)
-    # but catch it just in case there was a failure
-    raise "Failed to upload #{jarPath} to #{bucket}/#{target}!" unless success
-    puts "Uploaded #{jar} to #{file}!" if verbose
-    target
-  end
+    # fix the bucket name/prefix to match the s3 format
+    parts = bucket.split "/"
+    bucket = parts.shift
+    target = File.join(parts, target) unless parts.empty?
+    success = @s3.bucket(bucket).object(target).upload_file(jar)
+    # catch just in case there was a failure
+    raise "Failed to upload #{jarPath} to #{s3_full_name}!" unless success
+    s3_full_name
   end
 end

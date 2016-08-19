@@ -1,19 +1,15 @@
+
+require 'yaml'
+
 module InternalUtils
-  def load_creds
-    require 'yaml'
+
+  def load_creds(credentials_file)
     begin
-      creds = YAML.load(File.read(@options.credentials))
+      creds = YAML.load(File.read(credentials_file))
     rescue Exception => e
-      puts "Could not read credentials file at: #{@options.credentials}"
+      puts "Could not read credentials file at: #{credentials_file}"
       raise e
     end
     creds
-  end
-
-  def should_deploy?(job)
-    puts "Checking if we should deploy: #{job.name}"
-    ret = @options.names.empty? || @options.names.include?(job.name)
-    puts " ===> Skipping: #{job.name}" unless ret
-    return ret
   end
 end

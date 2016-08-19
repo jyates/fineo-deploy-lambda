@@ -43,6 +43,7 @@ module Lambda
       hash[:handler] = @handler
       hash[:timeout] = @timeout
       hash[:memory_size] = @memory
+      hash[:runtime] = "java8"
       hash
     end
   end

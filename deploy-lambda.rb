@@ -27,16 +27,20 @@ OptionParser.new do |opts|
   end
 
   opts.on('-c', '--credentials FILE', "Location of the credentials FILE to use.") do |s|
-    @options.credentials = s
+    options.credentials = s
   end
 
-  opts.on('-r', '--region REGIONNAME', "Specify the region. Default: #{@options.region}") do |name|
-    @options.region = name
+  opts.on('-r', '--region REGIONNAME', "Specify the region. Default: #{options.region}") do |name|
+    options.region = name
   end
 
   opts.on("-b", '--bucket BUCKET', "Name of the s3 bucket to deploy the jars. Default: "+
-    "#{@options.bucket}") do |bucket|
-    @options.bucket = bucket
+    "#{options.bucket}") do |bucket|
+    options.bucket = bucket
+  end
+
+  opts.on("--update-config-only", "Only update the configuration of the specified functions") do |v|
+    options.config_only = true
   end
 
   opts.on("--dry-run", "Enable dry run") do |v|
@@ -57,7 +61,8 @@ file = File.read(options.source)
 jars = JSON.parse(file)
 
 puts "Deploying jars: #{jars}" if options.verbose
-defs = find_definitions(jars)
-lambda = LambdaAws.new(options.region)
-validate_states(lambda, defs)
-deploy(lambda, defs, options.bucket) unless options.dryrun
+include Deploying
+defs = find_definitions(jars, options)
+lambda = LambdaAws.new(options)
+validate_definitions(lambda, defs) unless options.config_only
+deploy(lambda, defs, options) unless options.dryrun
