@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 current="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
