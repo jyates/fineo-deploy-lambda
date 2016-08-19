@@ -8,34 +8,26 @@ use *with caution*
 
 RVM - the ruby version manager
 
+## Running
 ### 1. Setup Environment (first time only)
 
-```$ setup-deploy.sh```
+```cd```ing into the directory should cause rvm to install any necessary dependencies.
 
-This installs the correct ruby dependencies
+### 2. Input Properties
 
-### 2. Build Deployable Jar(s)
+Input properties are a simple hash of source/type. see ```example/input.json``` for how to define this. For CI, we also have the ```setup-env.rb``` script to translate environment variables to input json properties
 
-```$ deploy/build-jar/lib/build-jar.rb```
+### 3. Build Deployable Jar(s)
+
+```$ build-jar.rb```
 
 Builds the properties that each jar needs and then sets those properties in each of the desired deployment targets. Also allows you to 
 override the properties with command line options.
 
+An important property is the ```--testing [PREFIX]``` flag to enable a deployment of the functions with a testing prefix for prefixable properties (e.g firehose names, dynamo tables, etc).
+
 ### 3. Deploy jar to aws
 
-```$ deploy/deploy-processing/lib/deploy-processing.rb```
+```$ deploy-lambda.rb```
 
-Does the actual deployment. You can deploy all the stages, functions, and jars at once, or select
-a subset to deploy. Use ```-h``` to find what you can select.
-
-### Deployment Validation
-
-#### Stream processing
-
-A test version can be deployed and tested with the simple command:
-
-```$ test-streaming.sh```
-
-This will build a deployable lambda jar with test versions, deploy it to AWS and then run a validation test against the deployment and then cleanup all the test resources (kinesis pipes, lambda event sources, firehoses, dynamo tables, etc.) used for the validation.
-
-However, the lambda function is **not deleted**, so you will have to publish a new version with a new configuration (see above).  
+Does the actual deployment. Functions to deploy are determined by an input json file, the same as is output by ```build-jar.rb```. An example is avaible at ```example/output.json```. You can also just update the configuration of the lambda function via the ```--update-config-only``` flag. 
