@@ -56,13 +56,12 @@ class LambdaAws
   def promote(definition, stage, version)
     func = definition.func
     begin
-      alias = @client.get_alias({function_name: func.name, alias: stage})
+      info = @client.get_alias({function_name: func.name, alias: stage})
       # alias exists, so move it to the new version
       @client.update_alias({function_name: func.name,
                             alias: stage,
                             function_version: version,
-                            description: "Updating #{stage} to #{version} from "+
-                              "#{alias.function_version"})
+                            description: "Updating #{stage} to #{version} from #{info.function_version}"})
     rescue Aws::Lambda::Errors::ResourceNotFoundException
       # alias doesn't exist, so just create it
       @client.create_alias({function_name: func.name,
