@@ -4,6 +4,7 @@ require_relative "properties"
 
 class Properties::Dynamo
 
+  attr_reader :opts
   def initialize()
     @opts = []
     @opts << ArgOpts.simple("dynamo.region","us-east-1", 'Region for the table')

@@ -25,8 +25,24 @@ lambda = LambdaAws.new(options)
 validate_definitions(lambda, defs) unless options.config_only
 deploy(lambda, defs, options) unless options.dryrun
 
-require 'pp'
-puts "Deployed definition:"
-defs.each{|definition|
-  pp(definition)
+exit unless options.verbose
+puts "Deployed definitions:"
+defs.each{|d|
+  puts d.type
+  puts "  -> #{d.name}"
+  definition = d.def
+  func = definition.func
+  puts "\tLambda Properties"
+  puts "\t  name:    #{func.name}"
+  puts "\t  timeout: #{func.timeout}"
+  puts "\t  memory:  #{func.memory}"
+  puts "\t  handler: #{func.handler}"
+  next unless options.verbose2
+  puts
+  puts "\tFunction Properties"
+  definition.properties.each{|prop|
+    prop.opts.each{|opt|
+      puts "\t  #{opt.key} => #{opt.value} - #{opt.desc}"
+    }
+  }
 }
