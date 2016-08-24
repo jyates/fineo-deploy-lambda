@@ -10,8 +10,8 @@ class Properties::Firehose
     manager.add(ArgOpts.simple(name("url"), "https://firehose.us-east-1.amazonaws.com", 'Firehose Url'),
       # raw record archiving
       ref("raw.archive", "fineo-raw-archive", "Name of Firehose stream to store all raw records"),
-      ref("raw.malformed","fineo-raw-malformed" "Malformed event Firehose stream name"),
-      ref("raw.error","fineo-raw-malformed" "Error on write event Firehose stream name"),
+      ref("raw.malformed","fineo-raw-malformed", "Malformed event Firehose stream name"),
+      ref("raw.error","fineo-raw-malformed", "Error on write event Firehose stream name"),
 
       # parsed record - "staged" - params
       ref("staged.archive", "fineo-staged-archive", "Name of Firehose stream to "+
@@ -24,7 +24,7 @@ class Properties::Firehose
 private
 
   def self.ref(name, default_val, desc)
-    ArgOpts.ref(name(name), default_val, "stream", desc)
+    ArgOpts.ref(name(name), default_val, "streams", desc)
   end
 
   def self.name(suffix)

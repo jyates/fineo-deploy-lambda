@@ -40,8 +40,9 @@ module Deploying
         options.bucket = bucket
       end
 
-      opts.on("--update-config-only", "Only update the configuration of the specified functions") do |v|
-        options.config_only = true
+      opts.on("--test PROPERTIES", "Do a testing deployment. Specify the testing properties " +
+        "file to extract the destination for each lambda function.") do |testing|
+        options.testing = testing
       end
 
       opts.on("--dry-run", "Enable dry run") do |v|
@@ -59,6 +60,9 @@ module Deploying
         options.force_deploy = true
       end
 
+      opts.on("--update-config-only", "Only update the configuration of the specified functions") do |v|
+        options.config_only = true
+      end
 
       opts.on("-v", "--verbose", "Verbose output") do |v|
         options.verbose = true
@@ -120,18 +124,34 @@ module Deploying
       return
     end
 
-    bucket = options.bucket
-    date_dir = Time.now.to_s
     upload = S3Upload.new(options)
-    defs.each{|d|
-      definition = d.def
-      jar = d.jar
-      jar_name = File.basename(jar)
-      target = File.join(d.type, date_dir, d.name, jar_name)
-      path = upload.send(jar, bucket, target)
-      d.path = path
-      d.version = lambda.deploy(path, definition.func) if options.force_deploy
-    }
+
+    # using the testing options for the lambda function
+    if options.testing
+      require 'json'
+      props = JSON.parse(File.read(options.testing))
+      lambda = props["lambda"]
+      defs.each{|d|
+        definition = d.def
+        name = definition.func_name
+        s3 = lambda[name]["s3"]
+        jar = d.jar
+        path = upload.send(jar, s3["bucket"], s3["key"])
+        d.path = path
+      }
+    else
+      bucket = options.bucket
+      date_dir = Time.now.to_s
+      defs.each{|d|
+        definition = d.def
+        jar = d.jar
+        jar_name = File.basename(jar)
+        target = File.join(d.type, date_dir, d.name, jar_name)
+        path = upload.send(jar, bucket, target)
+        d.path = path
+        d.version = lambda.deploy(path, definition.func) if options.force_deploy
+      }
+    end
   end
 
 private

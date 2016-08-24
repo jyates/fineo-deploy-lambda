@@ -16,14 +16,13 @@ class ArgOpts
         puts "WARN: #{key} not found in properties: #{desc}"
         return value
       end
-      puts "Using #{key} => #{ref}"
       ref
      })
   end
 
   def ArgOpts.ref(key, value, source, desc)
     ArgOpts.new(key, value, ->(props){
-      reference = ArgOpts.get_reference(props, key, desc)
+      reference = ArgOpts.get_reference(props, key)
       if reference.nil?
         puts "WARN: #{key} not found in properties: #{desc}"
         return value
