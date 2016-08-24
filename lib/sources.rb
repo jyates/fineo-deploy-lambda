@@ -18,5 +18,5 @@ Dir["#{__dir__}/sources/type/*.rb"].each { |f|
 
 Definitions = {
   "Schema" => SchemaDefinitions::DEFINITIONS,
-  "StreamIngest" => StreamDefinitions::DEFINITIONS
+  "Stream" => StreamDefinitions::DEFINITIONS
 }

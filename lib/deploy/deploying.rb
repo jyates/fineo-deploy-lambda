@@ -8,15 +8,23 @@ module Deploying
   def parse(args)
     options = OpenStruct.new
     options.region = 'us-east-1'
-    options.bucket =  'lambda.fineo.io/jars'
+    options.bucket =  'deploy.fineo.io/lambda'
+    options.source = "build.json"
+    options.output = "updates.json"
 
     OptionParser.new do |opts|
       opts.banner = "Usage: deploy-lambda.rb [options]"
       opts.separator "Deploy AWS Lambda functions"
       opts.separator "  Options:"
 
-      opts.on("--source FILE", "JSON file defining the sources jars to export") do |source|
+      opts.on("--source FILE", "JSON file defining the sources jars to export. " +
+        "Default: #{options.source}") do |source|
         options.source = source
+      end
+
+      opts.on("--output FILE", "JSON file to write the updated locations for each function. " +
+        "Default: #{options.output}") do |source|
+        options.output = source
       end
 
       opts.on('-c', '--credentials FILE', "Location of the credentials FILE to use.") do |s|
@@ -39,6 +47,18 @@ module Deploying
       opts.on("--dry-run", "Enable dry run") do |v|
         options.dryrun = true
       end
+
+      opts.on("--really-force-deploy-lambda-functions", "You really really want to force "+
+        "deployment of lambda functions from the command line/ci, instead of doing it the right "+
+        "way through an updated change set in cloudformation.") do |force|
+        puts "  --------  WARNING --------- "
+        puts " This should only be used in extreme circumstances to force deployment of lambda "+
+        "functions. Instead, you should just deploy the jars and update a cloudformation template."
+        puts " *** You have bee warned *** "
+        puts "  --------  WARNING --------- "
+        options.force_deploy = true
+      end
+
 
       opts.on("-v", "--verbose", "Verbose output") do |v|
         options.verbose = true
@@ -81,7 +101,9 @@ module Deploying
 
   # ensure that the current properties associated with the definition match those, if the
   # function has already been deployed
-  def validate_definitions(lambda, defs)
+  def validate_definitions(lambda, defs, options)
+    return unless options.force_deploy
+
     defs.each{|d|
       definition = d.def
       func = definition.func
@@ -107,7 +129,8 @@ module Deploying
       jar_name = File.basename(jar)
       target = File.join(d.type, date_dir, d.name, jar_name)
       path = upload.send(jar, bucket, target)
-      d.version = lambda.deploy(path, definition.func)
+      d.path = path
+      d.version = lambda.deploy(path, definition.func) if options.force_deploy
     }
   end
 

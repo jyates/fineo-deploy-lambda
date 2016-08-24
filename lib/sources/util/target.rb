@@ -20,6 +20,14 @@ class Target
     args << ArgOpts.prefix(property_name, default_value, description)
   end
 
+  def add(*options)
+    if options.is_a? Array
+      addAll(options)
+    else
+      addAll([options])
+    end
+  end
+
   def addAll(options)
     @args += options
   end

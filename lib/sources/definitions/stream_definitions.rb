@@ -9,5 +9,5 @@ module StreamDefinitions
                  .withSchemaStore().withIngest().withCreateTable()]
 
   DEFINITIONS = []
-  SourceLoader.new(DEFINITIONS, StreamDefinitions).load("stream_ingest")
+  SourceLoader.new(DEFINITIONS, StreamDefinitions).load("stream")
 end

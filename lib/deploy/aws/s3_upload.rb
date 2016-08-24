@@ -8,8 +8,7 @@ class S3Upload
 
   def initialize(options)
     @creds = load_creds(options.credentials)
-    @s3 = Aws::S3::Resource.new(region: options.region,
-                                access_key_id: @creds['access_key_id'],
+    @s3 = Aws::S3::Resource.new(access_key_id: @creds['access_key_id'],
                                 secret_access_key: @creds['secret_access_key'],
                                 validate_params: true,
                                 log_level: :debug)

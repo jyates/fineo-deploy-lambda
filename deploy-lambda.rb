@@ -22,16 +22,32 @@ jars = JSON.parse(file)
 puts "Deploying jars: #{jars}" if options.verbose
 defs = find_definitions(jars, options)
 lambda = LambdaAws.new(options)
-validate_definitions(lambda, defs) unless options.config_only
+validate_definitions(lambda, defs, options) unless options.config_only
 deploy(lambda, defs, options) unless options.dryrun
 
 exit unless options.verbose
 puts "Deployed definitions:"
+
+output = {}
+lambda = {}
+output["lambda"] = lambda
 defs.each{|d|
   puts d.type
   puts "  -> #{d.name}"
+  puts "\t#{d.path}"
+
   definition = d.def
   func = definition.func
+
+  func_def = {}
+  lambda[func.name] = func_def
+  s3 = {}
+  func_def["s3"] = s3
+  path = d.path.sub("s3://", "")
+  parts = path.split "/"
+  s3["bucket"] = parts.shift
+  s3["key"] = File.join(parts)
+
   puts "\tLambda Properties"
   puts "\t  name:    #{func.name}"
   puts "\t  timeout: #{func.timeout}"
@@ -46,3 +62,9 @@ defs.each{|d|
     }
   }
 }
+
+require 'pp'
+File.open(options.output,"w") do |f|
+  f.write(JSON.pretty_generate(JSON.parse(output.to_json().to_s())))
+end
+puts "[For next step] Updated lambda jars written to: #{options.output}"

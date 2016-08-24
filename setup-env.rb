@@ -2,6 +2,8 @@
 # Convert  environment variables into json format output dumped to the console. Its up to the caller
 # to sort the output appropriately and then use that as input to build-jar.rb
 
+require 'json'
+
 def simplify(hash)
   hash.select{|k,v|
     !v.nil?
@@ -28,7 +30,7 @@ append(ingest,'Ingest_Raw', "raw")
 append(ingest,'Ingest_Write', "storage")
 append(ingest,'Ingest_CleanDynamo', "clean")
 
-input = as_input(ingest, "ingest", 'Ingest_Source_Dir')
+input = as_input(ingest, "stream", 'Ingest_Source_Dir')
 params << input unless input.nil?
 
 schema = []
@@ -47,4 +49,4 @@ schema << {"field" => field} unless field.empty?
 input = as_input(schema, "schema", 'Schema_Source_Dir')
 params << input unless input.nil?
 
-puts "#{params}"
+puts "#{params.to_json}"

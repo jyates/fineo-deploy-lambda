@@ -9,56 +9,13 @@ File.expand_path(File.join(__dir__, "lib")).tap {|pwd|
 ############
 $PROP_FILE = "fineo-lambda.properties"
 
-# Requires
-############
-require 'util/files'
-require 'source_handler'
-require 'ostruct'
-require 'optparse'
-require 'sources'
-require 'json'
-
 # Main
 #######
+require 'building'
 include SourceHandler
+include Building
 
-options = OpenStruct.new
-OptionParser.new do |opts|
-  opts.banner = "Usage: build-jar.rb [options]"
-  opts.separator "Build lambda function jars"
-  opts.separator "  Options:"
-
-  opts.on("--source FILE", "JSON file defining the sources we will transform") do |source|
-    options.source = source
-  end
-
-  opts.on("--output FILE", "JSON file with the list of updated jars") do |out|
-    options.out = out
-  end
-
-  opts.on("--dry-run", "Enable dry run") do |v|
-    options.dryrun = true
-  end
-
-  opts.on("--testing [PREFIX]", "Build the parameters for a testing run") do |v|
-    v = "deploy-testing-#{Random.new(100000)}" if v.nil?
-    options.testing = v
-  end
-
-  opts.on("-v", "--verbose", "Verbose output") do |v|
-    options.verbose = true
-  end
-
-  opts.on("--vv", "Extra Verbose output") do |v|
-    options.verbose = true
-    options.verbose2 = true
-  end
-
-  opts.on_tail("-h", "--help", "Show this message") do
-    puts opts
-    exit
-  end
-end.parse!(ARGV)
+options = parse(ARGV)
 
 # Array of hashes
 file = File.read(options.source)
@@ -112,5 +69,5 @@ else
   File.open(options.out,"w") do |f|
     f.write(info.to_json)
   end
-  puts "Updated jars in json file: '#{options.out}'"
+  puts "[For next step] Updated jars in json file: '#{options.out}'"
 end

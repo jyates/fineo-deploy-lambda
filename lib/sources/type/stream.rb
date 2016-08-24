@@ -1,7 +1,7 @@
 
 require 'sources/definitions/stream_definitions'
 
-class StreamIngest < PropertyModule
+class Stream < PropertyModule
 
   VERSION = "2.0-SNAPSHOT"
 

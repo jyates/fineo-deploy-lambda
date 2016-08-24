@@ -4,11 +4,12 @@ set -e
 current="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 input=${current}/input.json
-output=${current}/output.json
+output=${current}/built.json
+update=${current}/update.json
 
-./current/setup-env.sh > ${input}
+$current/setup-env.rb > ${input}
 
-cmd="./${current}/build-jar.rb --source ${input} --output ${output} -v"
+cmd="${current}/build-jar.rb --source ${input} --output ${output} -v"
 if [ ! -z ${Dry_Run} ]; then
   cmd="${cmd} --dry-run"
 fi
@@ -20,14 +21,16 @@ fi
 # run the build command
 $cmd
 
-echo "Updated files:"
-cat ${output}
-
 if [ ! -z ${Dry_Run} ]; then
   exit 0
 fi
 
-cmd="./${current}/deploy-lambda.rb --source ${output} -v"
+cmd="${current}/deploy-lambda.rb --source ${output} --output ${update} \
+--credentials ${CREDENTIALS} -v"
 $cmd
+
+echo
+echo "------ Updated jars ------"
+cat ${update}
 
 exit 0
