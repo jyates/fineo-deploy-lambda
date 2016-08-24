@@ -8,6 +8,8 @@ require 'json'
 
 module Building
 
+  TEST_KEY = "integration.test.prefix"
+
   def parse(args)
     options = OpenStruct.new
     options.source = "input.json"
@@ -29,9 +31,13 @@ module Building
         options.dryrun = true
       end
 
-      opts.on("--testing [PREFIX]", "Build the parameters for a testing run") do |v|
-        v = "deploy-testing-#{Random.new(100000)}" if v.nil?
-        options.testing = v
+      opts.on("--props PROPERTIES_FILE", "Json file containing function properties.") do |props|
+        options.props = props
+      end
+
+      opts.on("--test", "If we are running a test. Properties file should be a test file, "+
+        "and thus contain the output locations for the all the necessary jars") do |v|
+        options.testing = true
       end
 
       opts.on("-v", "--verbose", "Verbose output") do |v|
@@ -51,4 +57,21 @@ module Building
     options
   end
 
+  def load_properties(options)
+    properties = JSON.parse(File.read(options.props))
+    testing = get_property(properties, TEST_KEY)
+    raise "Testing property (#{TEST_KEY}) not set in properties!" if !testing && options.testing
+    raise "Testing NOT specified, but found testing marker (#{TEST_KEY})!" if testing && ! options.testing
+    properties
+  end
+
+private
+
+  def get_property(hash, dot_separated_value)
+    value = dot_separated_value.split "."
+    while !value.empty? && !hash[value[0]].nil?
+      hash = hash[value.shift]
+    end
+    return value.empty? ? hash : nil
+  end
 end

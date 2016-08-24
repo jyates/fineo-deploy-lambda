@@ -16,10 +16,6 @@ class Target
      args << ArgOpts.simple(property_name, default_value, description)
   end
 
-  def test_prefixable_option(property_name, default_name, description)
-    args << ArgOpts.prefix(property_name, default_value, description)
-  end
-
   def add(*options)
     if options.is_a? Array
       addAll(options)
@@ -35,7 +31,8 @@ class Target
   def properties?(prefix="fineo")
     props = {}
     @args.each{|opt|
-      props["#{prefix}.#{opt.key}"] = opt.value
+      key = "#{prefix}.#{opt.key}".gsub("..", ".")
+      props[key] = opt.value
     }
     return props
   end

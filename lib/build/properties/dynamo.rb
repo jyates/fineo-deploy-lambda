@@ -13,12 +13,12 @@ class Properties::Dynamo
   end
 
   def withSchemaStore
-    @opts << ArgOpts.prefix("dynamo.schema-store", "schema-customer", 'DynamoDB schema repository table name')
+    @opts << ArgOpts.simple("dynamo.schema-store", "schema-customer", 'DynamoDB schema repository table name')
     self
   end
 
   def withIngest
-    @opts << ArgOpts.prefix("dynamo.ingest.prefix", "customer-ingest", 'DynamoDB ingest table name prefix')
+    @opts << ArgOpts.simple("dynamo.ingest.prefix", "customer-ingest", 'DynamoDB ingest table name prefix')
     self
   end
 
@@ -30,7 +30,8 @@ class Properties::Dynamo
 
   def withCreateBatchManifestTable
     @opts += [ArgOpts.simple("dynamo.batch-manifest.limit.write", "1", 'Max amount of write units to allocate to a single table'),
-              ArgOpts.simple("dynamo.batch-manifest.limit.read", "1", 'Max amount of write units to allocate to a single table')]
+              ArgOpts.simple("dynamo.batch-manifest.limit.read", "1", 'Max amount of write units to allocate to a single table'),
+              ArgOpts.simple("dynamo.batch-manifest.table", "batch-manifest", 'Max amount of write units to allocate to a single table')]
     self
   end
 

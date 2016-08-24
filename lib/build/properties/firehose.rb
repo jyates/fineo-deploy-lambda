@@ -9,16 +9,23 @@ class Properties::Firehose
   def self.addProps(manager)
     manager.add(ArgOpts.simple(name("url"), "https://firehose.us-east-1.amazonaws.com", 'Firehose Url'),
       # raw record archiving
-      ArgOpts.prefix(name("raw.archive"), "fineo-raw-archive", 'Name of Firehose stream to store all raw records'),
-      ArgOpts.new(name("raw.error"),"fineo-raw-malformed", ERROR_FIREHOSES, 'Malformed event Kinesis Firehose stream name'),
-      ArgOpts.new(name("raw.error.commit"),"fineo-raw-commit-failure", ERROR_FIREHOSES, 'Error on write event Kinesis Firehose stream name'),
+      ref("raw.archive", "fineo-raw-archive", "Name of Firehose stream to store all raw records"),
+      ref("raw.malformed","fineo-raw-malformed" "Malformed event Firehose stream name"),
+      ref("raw.error","fineo-raw-malformed" "Error on write event Firehose stream name"),
+
       # parsed record - "staged" - params
-      ArgOpts.prefix(name("staged.archive"), "fineo-staged-archive", 'Name of Firehose stream to archive all staged records'),
-      ArgOpts.new(name("staged.error"), "fineo-staged-dynamo-error", ERROR_FIREHOSES, 'Malformed Avro event Kinesis Firehose stream name'),
-      ArgOpts.new(name("staged.error.commit"), "fineo-staged-commit-failure", ERROR_FIREHOSES, 'Error on write Avro event Kinesis Firehose stream name'))
+      ref("staged.archive", "fineo-staged-archive", "Name of Firehose stream to "+
+        "archive all staged records"),
+      ref("staged.malformed", "fineo-staged-dynamo-error",
+        "Malformed Avro event Kinesis Firehose stream name"),
+      ref("staged.error", "fineo-staged-commit-failure", "Error on write Avro event Firehose stream name"))
   end
 
-  private
+private
+
+  def self.ref(name, default_val, desc)
+    ArgOpts.ref(name(name), default_val, "stream", desc)
+  end
 
   def self.name(suffix)
     "firehose.#{suffix}"

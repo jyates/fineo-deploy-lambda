@@ -31,13 +31,14 @@ sources.each{|entry|
   managers << SOURCES[name].call(info)
 }
 
-common_props = {}
+properties = load_properties(options)
+
 managers.each{|source|
-  common_props.merge! build_properties(source, options.testing, ARGV)
+  build_properties(source, properties, options.testing)
 }
 
 managers.each{|source|
-  print_target_properties(source, common_props, options.verbose2)
+  print_target_properties(source, options.verbose2)
 }
 
 # Done if we are dry-running
@@ -57,7 +58,7 @@ info = {
 managers.each{|source|
   name = source.class.name
   types << name
-  source_info = update_jars(tmp, out, source, common_props, options.verbose)
+  source_info = update_jars(tmp, out, source, options.verbose)
   info[name] = source_info
 }
 

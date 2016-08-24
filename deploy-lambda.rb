@@ -63,7 +63,6 @@ defs.each{|d|
   }
 }
 
-require 'pp'
 File.open(options.output,"w") do |f|
   f.write(JSON.pretty_generate(JSON.parse(output.to_json().to_s())))
 end

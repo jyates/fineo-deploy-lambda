@@ -1,12 +1,13 @@
 
 class Definition
 
-  attr_reader :name, :properties, :func
+  attr_reader :name, :properties, :func_name
 
-  def initialize(name, properties)
+  def initialize(name, func_name, properties)
     @name = name
     @path = name.split("-")
-    @properties = properties
+    @properties = properties.clone
+    @func_name = func_name
   end
 
   def matches?(stringOrHash)
@@ -17,10 +18,6 @@ class Definition
         return checkNext(deep_copy(@path), deep_copy(stringOrHash))
     end
     false
-  end
-
-  def function(name)
-    @func = Lambda::Func.new(name)
   end
 
 private

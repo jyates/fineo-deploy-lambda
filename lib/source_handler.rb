@@ -5,24 +5,19 @@ require 'util/zipdir'
 
 module SourceHandler
 
-  def build_properties(source, testing, args)
+  def build_properties(source, props, testing)
     # add the options from each source
     jars = source.targets
     manager = ArgManager.new
     jars.each{|jar|
+      jar.args << ArgOpts.simple(".#{Building::TEST_KEY}", "", "Test prefix") unless testing.nil?
       manager.addAll(jar.args)
     }
 
-    # parse the options into the manager, which sets the options
-    parser = OptionParser.new do |opts|
-      manager.getOpts(opts)
-    end
-    parser.parse(args)
-
-    manager.build(testing)
+    manager.bind(props)
   end
 
-  def print_target_properties(source, common_props, verbose=nil)
+  def print_target_properties(source, verbose=nil)
     return if verbose.nil?
 
     jars = source.targets
@@ -33,13 +28,10 @@ module SourceHandler
       jar.properties?.each{|k,v|
         puts "\t\t#{k} => #{v}"
       }
-      common_props.each{|k,v|
-        puts "\t\t#{k} => #{v}"
-      }
     }
   end
 
-  def update_jars(tmp, out, source, common_properties, verbose=nil)
+  def update_jars(tmp, out, source, verbose=nil)
     jars = {}
     source.targets.each{|target|
       # unzip the jar into a temp directory
@@ -49,7 +41,6 @@ module SourceHandler
 
       # write the properties into the property file
       hash = target.properties?
-      hash.merge!(common_properties)
       props = File.join(unpack, $PROP_FILE)
       File.open(props, 'w'){|file|
         hash.each{|k,v|
