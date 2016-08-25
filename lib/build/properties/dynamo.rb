@@ -13,29 +13,58 @@ class Properties::Dynamo
   end
 
   def withSchemaStore
-    @opts << ArgOpts.simple("dynamo.schema-store", "schema-customer", 'DynamoDB schema repository table name')
+    @opts << ArgOpts.new("dynamo.schema-store", "schema-customer",
+      table_prop?("SchemaStore", "name"))
     self
   end
 
   def withIngest
-    @opts << ArgOpts.simple("dynamo.ingest.prefix", "customer-ingest", 'DynamoDB ingest table name prefix')
+    @opts << ArgOpts.new("dynamo.ingest.prefix", "customer-ingest", ingest?("prefix"))
     self
   end
 
   def withCreateTable
-    @opts += [ArgOpts.simple("dynamo.ingest.limit.write", "5", 'Max amount of write units to allocate to a single table'),
-             ArgOpts.simple("dynamo.ingest.limit.read", "7", 'Max amount of write units to allocate to a single table')]
+    @opts += [ArgOpts.new("dynamo.ingest.limit.write", "5", ingest?("throughput.write")),
+             ArgOpts.new("dynamo.ingest.limit.read", "7", ingest?("throughput.read"))]
     self
   end
 
   def withCreateBatchManifestTable
-    @opts += [ArgOpts.simple("dynamo.batch-manifest.limit.write", "1", 'Max amount of write units to allocate to a single table'),
-              ArgOpts.simple("dynamo.batch-manifest.limit.read", "1", 'Max amount of write units to allocate to a single table'),
-              ArgOpts.simple("dynamo.batch-manifest.table", "batch-manifest", 'Max amount of write units to allocate to a single table')]
+    @opts += [ArgOpts.new("dynamo.batch-manifest.limit.write", "1", batch?("throughput.write")),
+              ArgOpts.new("dynamo.batch-manifest.limit.read", "1", batch?("throughput.read")),
+              ArgOpts.new("dynamo.batch-manifest.table", "batch-manifest", batch?("name"))]
     self
   end
 
   def addProps(manager)
     manager.addAll(@opts)
+  end
+
+private
+
+  def ingest?(prop)
+    table_prop?("CustomerIngest", prop)
+  end
+
+  def batch?(prop)
+    table_prop?("BatchManifest", prop)
+  end
+
+  def table_prop?(tableref, prop)
+    Proc.new{|props|
+      get_table_property_impl(props, tableref, prop)
+    }
+  end
+
+  def get_table_property_impl(props, tableref, prop)
+    ref = props["dynamo"]["tables"][tableref]
+    raise "No table reference #{tableref} present!" if ref.nil?
+
+    parts = prop.split "."
+    parts.each{|key|
+      ref = ref[key]
+      return nil if ref.nil?
+    }
+    ref
   end
 end
