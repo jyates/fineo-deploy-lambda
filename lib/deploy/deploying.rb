@@ -17,7 +17,7 @@ module Deploying
       opts.separator "Deploy AWS Lambda functions"
       opts.separator "  Options:"
 
-      opts.on("--source FILE", "JSON file defining the sources jars to export. " +
+      opts.on("--source FILE", "JSON file defining the source jars to export. " +
         "Default: #{options.source}") do |source|
         options.source = source
       end
@@ -99,7 +99,6 @@ module Deploying
       }
     }
 
-    puts "Found definitions: #{defs}" if options.verbose2
     defs
   end
 

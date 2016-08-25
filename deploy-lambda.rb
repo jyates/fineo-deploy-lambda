@@ -31,36 +31,14 @@ puts "Deployed definitions:"
 output = {}
 lambda = {}
 output["lambda"] = lambda
+require 'pp'
 defs.each{|d|
   puts d.type
   puts "  -> #{d.name}"
   puts "\t#{d.path}"
 
   definition = d.def
-  func = definition.func
-
-  func_def = {}
-  lambda[func.name] = func_def
-  s3 = {}
-  func_def["s3"] = s3
-  path = d.path.sub("s3://", "")
-  parts = path.split "/"
-  s3["bucket"] = parts.shift
-  s3["key"] = File.join(parts)
-
-  puts "\tLambda Properties"
-  puts "\t  name:    #{func.name}"
-  puts "\t  timeout: #{func.timeout}"
-  puts "\t  memory:  #{func.memory}"
-  puts "\t  handler: #{func.handler}"
-  next unless options.verbose2
-  puts
-  puts "\tFunction Properties"
-  definition.properties.each{|prop|
-    prop.opts.each{|opt|
-      puts "\t  #{opt.key} => #{opt.value} - #{opt.desc}"
-    }
-  }
+  pp(definition) if options.verbose2
 }
 
 File.open(options.output,"w") do |f|
