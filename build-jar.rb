@@ -28,7 +28,9 @@ sources.each{|entry|
   source = entry.shift
   name = source[0]
   info = source[1]["info"]
-  managers << SOURCES[name].call(info)
+  builder = SOURCES[name]
+  raise "No builder found for '#{name}'" if builder.nil?
+  managers << builder.call(info)
 }
 
 properties = load_properties(options)

@@ -5,10 +5,10 @@ require 'sources/definitions/source_loader'
 
 module SchemaDefinitions
 
-  Properties = [Properties::Dynamo.new().withSchemaStore().withCreateTable()]
+  Properties = [Properties::Dynamo.new().withSchemaStore()]
   DEFINITIONS = []
 
-  loader = SourceLoader.new(DEFINITIONS, SchemaDefinitions)
+  loader = SourceLoader.new("Schema", DEFINITIONS, SchemaDefinitions)
   loader.load("schema")
   loader.load("schema/metric")
   loader.load("schema/field")

@@ -29,15 +29,22 @@ exit unless options.verbose
 puts "Deployed definitions:"
 
 output = {}
-lambda = {}
-output["lambda"] = lambda
+output["lambda"] = {}
 require 'pp'
 defs.each{|d|
+  definition = d.def
+  func_def = {}
+  output["lambda"][definition.func_name] = func_def
+  s3 = {}
+  func_def["s3"] = s3
+  path = d.path.sub("s3://", "")
+  parts = path.split "/"
+  s3["bucket"] = parts.shift
+  s3["key"] = File.join(parts)
+
   puts d.type
   puts "  -> #{d.name}"
   puts "\t#{d.path}"
-
-  definition = d.def
   pp(definition) if options.verbose2
 }
 

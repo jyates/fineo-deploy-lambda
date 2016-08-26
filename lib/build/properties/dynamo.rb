@@ -19,13 +19,9 @@ class Properties::Dynamo
   end
 
   def withIngest
-    @opts << ArgOpts.new("dynamo.ingest.prefix", "customer-ingest", ingest?("prefix"))
-    self
-  end
-
-  def withCreateTable
-    @opts += [ArgOpts.new("dynamo.ingest.limit.write", "5", ingest?("throughput.write")),
-             ArgOpts.new("dynamo.ingest.limit.read", "7", ingest?("throughput.read"))]
+    @opts +=[ArgOpts.new("dynamo.ingest.prefix", "customer-ingest", ingest?("prefix")),
+              ArgOpts.new("dynamo.ingest.limit.write", "5", ingest?("throughput.write")),
+              ArgOpts.new("dynamo.ingest.limit.read", "7", ingest?("throughput.read"))]
     self
   end
 

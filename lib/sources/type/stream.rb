@@ -1,7 +1,7 @@
 
 require 'sources/definitions/stream_definitions'
 
-class Stream < PropertyModule
+class Stream < SourceType
 
   VERSION = "2.0-SNAPSHOT"
 

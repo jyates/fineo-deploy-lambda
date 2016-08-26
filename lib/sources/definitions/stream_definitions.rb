@@ -1,13 +1,9 @@
 
-require 'sources/definitions/definition'
-require 'function/lambda'
-require 'sources/definitions/source_loader'
-
 module StreamDefinitions
 
   Properties = [Properties::Kinesis, Properties::Firehose, Properties::Dynamo.new()
-                 .withSchemaStore().withIngest().withCreateTable()]
+                 .withSchemaStore().withIngest()]
 
   DEFINITIONS = []
-  SourceLoader.new(DEFINITIONS, StreamDefinitions).load("stream")
+  SourceLoader.new("Stream", DEFINITIONS, StreamDefinitions).load("stream")
 end

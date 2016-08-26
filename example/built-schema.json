@@ -1,1 +1,1 @@
-{"types":["Schema"],"Schema":{"org":"tmp/out/Schema/org/schema-lambda-2.0-SNAPSHOT-aws.jar","metric-field":"tmp/out/Schema/metric-field/schema-lambda-2.0-SNAPSHOT-aws.jar"}}
+{"types":["Schema"],"Schema":{"metric-update":"tmp/out/Schema/metric-update/schema-lambda-2.0-SNAPSHOT-aws.jar"}}

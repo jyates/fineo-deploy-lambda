@@ -1,7 +1,7 @@
 
 require 'sources/definitions/schema_definitions'
 
-class Schema < PropertyModule
+class Schema < SourceType
 
   VERSION = "2.0-SNAPSHOT"
 

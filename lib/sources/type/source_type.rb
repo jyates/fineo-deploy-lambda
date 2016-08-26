@@ -1,11 +1,11 @@
 
-class PropertyModule
+class SourceType
 
   attr_reader :targets
 
-  def initialize(dir, prefix, version, jar_type="aws")
+  def initialize(dir, source_jar_prefix, version, jar_type="aws")
     @dir = dir
-    @prefix = prefix
+    @prefix = source_jar_prefix
     @version = version
     @jar_type = jar_type
   end
@@ -16,7 +16,6 @@ class PropertyModule
       definitions.each{|poss|
         if poss.matches? target
           @targets << field(poss)
-          break
         end
       }
     }

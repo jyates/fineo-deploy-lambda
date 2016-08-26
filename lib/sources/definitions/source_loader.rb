@@ -1,6 +1,7 @@
 
 class SourceLoader
-  def initialize(arr, clazz)
+  def initialize(type, arr, clazz)
+    Definitions[type] = arr
     @arr = arr
     @moduleName = clazz.name
   end

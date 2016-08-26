@@ -22,20 +22,22 @@ class Definition
 
 private
 
-  def checkNext(path, hashOrString)
+  def checkNext(path, query)
+    puts "Checking #{path} vs #{query}"
     # no more left for both path and hash/string
     pathEmpty = (path.nil? || path.empty?)
-    hashEmpty = (hashOrString.nil? || hashOrString.empty?)
-    return true if pathEmpty && hashEmpty # both are empty
-    return false if pathEmpty ^ hashEmpty # only one is empty
+    queryEmpty = (query.nil? || query.empty?)
+    return true if pathEmpty && queryEmpty # both are empty
+    return false if pathEmpty ^ queryEmpty # only one is empty
 
-    # just one value left in each, check that
-    if hashOrString.size == 1 && path.size == 1
-      return hashOrString[0] == path[0]
+    if path.size == 1
+      return false if query.is_a? Hash # has more values, but we are at the end
+      # it should be an array
+      return query.include? path[0]
     end
 
     # must be some values in both
-    arr = hashOrString.shift
+    arr = query.shift
     part = path.shift
 
     return part != arr[0] ? false : checkNext(path, arr[1])

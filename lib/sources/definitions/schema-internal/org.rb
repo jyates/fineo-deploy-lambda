@@ -1,9 +1,7 @@
 
-module SchemaDefinitions
-  class Org < Definition
+class SchemaInternalDefinitions::Org < Definition
 
-    def initialize()
-      super("org", "SchemaInternalCreateOrg", SchemaDefinitions::Properties)
-    end
+  def initialize()
+    super("org", "InternalSchemaCreateOrg", SchemaDefinitions::Properties)
   end
 end

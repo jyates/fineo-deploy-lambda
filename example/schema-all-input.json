@@ -1,0 +1,17 @@
+[
+  {
+    "schema": {
+      "info": {
+        "dir": "/Users/jyates/dev/iot-startup/schema/schema-lambda/target",
+        "targets": [
+          {
+            "metric": ["create", "read", "delete", "update"]
+          },
+          {
+            "field": ["create", "read", "delete", "update"]
+          }
+        ]
+      }
+    }
+  }
+]
