@@ -1,7 +1,6 @@
 
 require 'build/arg_manager'
 require 'rubygems'
-require 'util/zipdir'
 
 module SourceHandler
 
@@ -63,7 +62,11 @@ module SourceHandler
       outjar = File.join(outdir, target.jarname)
 
       # rezip the jar
-      ZipFileGenerator.new(unpack, outjar).write
+      outjar_tmp = File.basename(outjar)
+      outdir = File.dirname(outjar)
+      FileUtils.mkdir(outdir) unless File.exist? outdir
+      cmd = "cd #{unpack}; jar cf #{outjar_tmp} *; cd -;mv #{unpack}/#{outjar_tmp} #{outjar}"
+      `#{cmd}`
       puts "  Updated: #{outjar}" unless verbose.nil?
       jars[target.name] = outjar
     }
