@@ -25,7 +25,7 @@ lambda = LambdaAws.new(options)
 validate_definitions(lambda, defs, options) unless options.config_only
 deploy(lambda, defs, options) unless options.dryrun
 
-exit unless options.verbose
+exit if options.dryrun || !options.verbose
 puts "Deployed definitions:"
 
 output = {}
