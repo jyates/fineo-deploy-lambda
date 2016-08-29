@@ -23,7 +23,6 @@ class Definition
 private
 
   def checkNext(path, query)
-    puts "Checking #{path} vs #{query}"
     # no more left for both path and hash/string
     pathEmpty = (path.nil? || path.empty?)
     queryEmpty = (query.nil? || query.empty?)

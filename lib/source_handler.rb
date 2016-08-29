@@ -1,6 +1,7 @@
 
 require 'build/arg_manager'
 require 'rubygems'
+require 'fileutils'
 
 module SourceHandler
 

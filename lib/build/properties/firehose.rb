@@ -7,7 +7,7 @@ class Properties::Firehose
   ERROR_FIREHOSES = ->(test_prefix){ "#{test_prefix}failed-records" }
 
   def self.addProps(manager)
-    manager.add(ArgOpts.simple(name("url"), "https://firehose.us-east-1.amazonaws.com", 'Firehose Url'),
+    manager.add(ref("url", "https://firehose.us-east-1.amazonaws.com", 'Firehose Url'),
       # raw record archiving
       ref("raw.archive", "fineo-raw-archive", "Name of Firehose stream to store all raw records"),
       ref("raw.malformed","fineo-raw-malformed", "Malformed event Firehose stream name"),

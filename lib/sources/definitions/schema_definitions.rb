@@ -5,7 +5,8 @@ require 'sources/definitions/source_loader'
 
 module SchemaDefinitions
 
-  Properties = [Properties::Dynamo.new().withSchemaStore()]
+  Properties = [Properties::Dynamo.new().withSchemaStore(),
+                Properties::Api.new().withSchema()]
   DEFINITIONS = []
 
   loader = SourceLoader.new("Schema", DEFINITIONS, SchemaDefinitions)

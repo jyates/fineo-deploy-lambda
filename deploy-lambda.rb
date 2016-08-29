@@ -19,7 +19,7 @@ options = parse(ARGV)
 file = File.read(options.source)
 jars = JSON.parse(file)
 
-puts "Deploying jars: #{jars}" if options.verbose
+puts "Deploying jars: #{JSON.pretty_generate(jars)}" if options.verbose
 defs = find_definitions(jars, options)
 lambda = LambdaAws.new(options)
 validate_definitions(lambda, defs, options) unless options.config_only
