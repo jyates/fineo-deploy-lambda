@@ -49,4 +49,15 @@ schema << {"field" => field} unless field.empty?
 input = as_input(schema, "schema", 'Schema_Source_Dir')
 params << input unless input.nil?
 
+batch = []
+sns = []
+append(sns,'Batch_Sns_S3_Local', "local")
+append(sns,'Batch_Sns_S3_Remote', "remote")
+batch << {"sns" => sns} unless sns.empty?
+
+append(batch,'Batch_Spark_Processor', "processor")
+append(batch,'Batch_Launch_EMR_Cluster', "launchemr")
+input = as_input(batch, "batch", 'Batch_Processing_Parent_Dir')
+params << input unless input.nil?
+
 puts "#{params.to_json}"

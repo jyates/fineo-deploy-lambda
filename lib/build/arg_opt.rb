@@ -10,6 +10,10 @@ class ArgOpts
   end
 
   def ArgOpts.simple(key, value, desc)
+    ArgOpts.property_ref(key, value, desc)
+  end
+
+  def ArgOpts.property_ref(key, value, desc)
     ArgOpts.new(key, value, ->(props) {
       ref = ArgOpts.get_reference(props, key)
       if ref.nil?
@@ -18,6 +22,14 @@ class ArgOpts
       end
       ref
      })
+  end
+
+  def ArgOpts.direct(key, value, desc)
+    ArgOpts.new(key, value, ->(props){
+      puts "getting reference: #{key}"
+      parts = key.split "."
+      ArgOpts.depth_search(parts, props)
+    })
   end
 
   def ArgOpts.ref(key, value, source, desc)
@@ -44,11 +56,14 @@ private
     parts = key.split "."
     type = parts.shift
     properties = type.empty? ? props : props[type]["properties"]
-    reference = properties
+    ArgOpts.depth_search(parts, properties)
+  end
+
+  def ArgOpts.depth_search(parts, properties)
     parts.each{|key|
-      reference = reference[key]
-      return nil if reference.nil?
+      properties = properties[key]
+      return nil if properties.nil?
     }
-    reference
+    properties
   end
 end

@@ -11,15 +11,17 @@ class SourceType
   end
 
   def set_targets(request, definitions)
-    @targets = []
-    request.each{|target|
-      definitions.each{|poss|
-        if poss.matches? target
-          @targets << field(poss)
-        end
-      }
-    }
-  end
+         require 'pp'
+         @targets = []
+         request.each{|target|
+           pp(target)
+           definitions.each{|poss|
+             if poss.matches? target
+               @targets << field(poss)
+             end
+           }
+         }
+       end
 
   def field(definition)
     field?(definition.name, definition.properties)
