@@ -1,0 +1,10 @@
+[
+  {
+    "batch": {
+      "info": {
+        "dir": "/Users/jyates/dev/iot-startup/ingest/pipeline/batch-processing-parent/",
+        "targets": ["processor"]
+      }
+    }
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "lambda": {
+    "SnsS3LocalFileEventHandler": {
+      "s3": {
+        "bucket": "deploy.fineo.io",
+        "key": "lambda/Batch/2016-08-29 11:31:25 -0700/sns-local/sns-handler-2.0-SNAPSHOT-aws.jar"
+      }
+    },
+    "SnsS3RemoteFileEventHandler": {
+      "s3": {
+        "bucket": "deploy.fineo.io",
+        "key": "lambda/Batch/2016-08-29 11:31:25 -0700/sns-remote/sns-handler-2.0-SNAPSHOT-aws.jar"
+      }
+    },
+    "LaunchEMRCluster": {
+      "s3": {
+        "bucket": "deploy.fineo.io",
+        "key": "lambda/Batch/2016-08-29 11:31:25 -0700/launchemr/lambda-emr-launch-2.0-SNAPSHOT-aws.jar"
+      }
+    }
+  }
+}
