@@ -2,7 +2,7 @@
 class BatchDefinitions::LaunchEmrCluster < BatchDefinition
 
   def initialize()
-    super("launchemr",  "LaunchEMRCluster",
+    super("launchemr",  "BatchLaunchEMRCluster",
     [Properties::Dynamo.new().withCreateBatchManifestTable(),
       Properties::LaunchEmr],
       ["lambda-emr-launch"])

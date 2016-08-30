@@ -153,6 +153,25 @@ module Deploying
     end
   end
 
+  def set_definition(output, definition, path)
+    func_def = output
+    definition.config_key.split(".").each{|key|
+      nextHash = func_def[key]
+      if nextHash.nil?
+        nextHash = {}
+        func_def[key] = nextHash
+      end
+      func_def = nextHash
+    }
+
+    s3 = {}
+    func_def["s3"] = s3
+    path = path.sub("s3://", "")
+    parts = path.split "/"
+    s3["bucket"] = parts.shift
+    s3["key"] = File.join(parts)
+  end
+
 private
 
   def update_config(lambda, defs)

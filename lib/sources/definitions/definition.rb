@@ -1,13 +1,14 @@
 
 class Definition
 
-  attr_reader :name, :properties, :func_name
+  attr_reader :name, :properties, :func_name, :config_key
 
-  def initialize(name, func_name, properties)
+  def initialize(name, func_name, properties, config_key=nil)
     @name = name
     @path = name.split("-")
     @properties = properties.clone
     @func_name = func_name
+    @config_key = config_key.nil? ? "lambda.#{@func_name}": config_key
   end
 
   def matches?(stringOrHash)
