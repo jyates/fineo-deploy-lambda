@@ -49,7 +49,7 @@ module SourceHandler
       }
 
       unless verbose.nil?
-        puts "    Properties: #{target.jar}"
+        puts "    Properties: #{unpack} - #{File.basename(target.jar)}"
         File.open(props, "r") do |f|
           f.each_line do |line|
             puts "\t#{line}"
