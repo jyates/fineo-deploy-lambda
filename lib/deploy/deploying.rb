@@ -140,7 +140,7 @@ module Deploying
       }
     else
       bucket = options.bucket
-      date_dir = Time.now.to_s
+      date_dir = Time.now.to_s.gsub(" ", "")
       defs.each{|d|
         definition = d.def
         jar = d.jar
