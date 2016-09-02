@@ -31,7 +31,7 @@ module SourceHandler
     }
   end
 
-  def update_jars(tmp, out, source, verbose=nil)
+  def update_jars(tmp, out, source, verbose)
     jars = {}
     source.targets.each{|target|
       # unzip the jar into a temp directory

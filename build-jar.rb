@@ -48,7 +48,7 @@ exit if options.dryrun
 
 puts "Updating jars..."
 tmp = "tmp/open"
-out = "tmp/out"
+out = "tmp/out_#{Time.now.to_s.gsub(' ', '')}_#{Random.new().rand(1000000)}"
 create_tmp tmp
 create_tmp out
 

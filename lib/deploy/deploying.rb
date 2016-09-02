@@ -129,11 +129,16 @@ module Deploying
     if options.testing
       require 'json'
       props = JSON.parse(File.read(options.testing))
-      lambda = props["lambda"]
       defs.each{|d|
         definition = d.def
         name = definition.func_name
-        s3 = lambda[name]["s3"]
+        lambda = props
+        definition.config_key.split(".").each{|part|
+          lambda = lambda[part]
+          break if lambda.nil?
+        }
+        raise "No property found for #{definition.config_key} in properties!" if lambda.nil?
+        s3 = lambda["s3"]
         jar = d.jar
         path = upload.send(jar, s3["bucket"], s3["key"])
         d.path = path
@@ -192,5 +197,5 @@ private
   def verify(func_name, name, expected, actual)
     raise "#{func_name}:: Mismatch for #{name}. Expected: #{expected}. Actual: #{actual}" unless
       expected == actual
-  end
+  end 
 end

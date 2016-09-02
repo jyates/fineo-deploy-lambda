@@ -5,7 +5,7 @@
     "cluster": {
       "s3": {
         "bucket": "deploy.fineo.io",
-        "key": "lambda/Batch/2016-08-31 10:35:39 -0700/processor/batch-processing-2.0-SNAPSHOT-aws.jar"
+        "key": "lambda/Batch/2016-09-0110:54:06-0700/processor/batch-processing-2.0-SNAPSHOT-aws.jar"
       }
     }
   }

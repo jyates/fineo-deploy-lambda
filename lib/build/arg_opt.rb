@@ -26,7 +26,6 @@ class ArgOpts
 
   def ArgOpts.direct(key, value, desc)
     ArgOpts.new(key, value, ->(props){
-      puts "getting reference: #{key}"
       parts = key.split "."
       ArgOpts.depth_search(parts, props)
     })

@@ -13,6 +13,8 @@ require 'json'
 require 'deploy/deploying'
 require 'deploy/aws/lambda'
 
+require 'pp'
+
 include Deploying
 
 options = parse(ARGV)
@@ -30,7 +32,7 @@ puts "Deployed definitions:"
 
 output = {}
 output["lambda"] = {}
-require 'pp'
+
 defs.each{|d|
   definition = d.def
   set_definition(output, definition, d.path)
