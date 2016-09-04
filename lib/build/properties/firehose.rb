@@ -4,31 +4,54 @@ require_relative "properties"
 
 class Properties::Firehose
 
-  ERROR_FIREHOSES = ->(test_prefix){ "#{test_prefix}failed-records" }
-
   def self.addProps(manager)
-    manager.add(
-      ArgOpts.simple(name("url"), "https://firehose.us-east-1.amazonaws.com", 'Firehose Url'),
-      # raw record archiving
-      ref("raw.archive", "fineo-raw-archive", "Name of Firehose stream to store all raw records"),
-      ref("raw.malformed","fineo-raw-malformed", "Malformed event Firehose stream name"),
-      ref("raw.error","fineo-raw-malformed", "Error on write event Firehose stream name"),
+    Firehose.new().all_raw().all_staged().addProps(manager)
+  end
 
-      # parsed record - "staged" - params
-      ref("staged.archive", "fineo-staged-archive", "Name of Firehose stream to "+
-        "archive all staged records"),
-      ref("staged.malformed", "fineo-staged-dynamo-error",
-        "Malformed Avro event Kinesis Firehose stream name"),
-      ref("staged.error", "fineo-staged-commit-failure", "Error on write Avro event Firehose stream name"))
+  def initialize()
+    @opts = [ArgOpts.simple(name("url"), "https://firehose.us-east-1.amazonaws.com",
+      'Firehose Url')]
+  end
+
+  def all_raw
+    raw("archive", "malformed", "error")
+    self
+  end
+
+  def all_staged
+    staged("archive", "malformed", "error")
+    self
+  end
+
+  def raw(*names)
+    names.each{|name|
+      addStage("raw", name)
+    }
+    self
+  end
+
+  def staged(*names)
+    names.each{|name|
+      addStage("staged", name)
+    }
+    self
+  end
+
+  def addProps(manager)
+    manager.addAll(@opts)
   end
 
 private
 
-  def self.ref(name, default_val, desc)
+  def ref(name, default_val, desc)
     ArgOpts.ref(name(name), default_val, "streams", desc)
   end
 
-  def self.name(suffix)
+  def name(suffix)
     "firehose.#{suffix}"
+  end
+
+  def addStage(stage, name)
+    @opts << ref("#{stage}.#{name}", "fineo-#{stage}-#{name}", "Firehose: #{stage} - #{name}")
   end
 end
