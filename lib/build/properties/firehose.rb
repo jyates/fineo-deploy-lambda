@@ -5,7 +5,7 @@ require_relative "properties"
 class Properties::Firehose
 
   def self.addProps(manager)
-    Firehose.new().all_raw().all_staged().addProps(manager)
+    Properties::Firehose.new().all_raw().all_staged().addProps(manager)
   end
 
   def initialize()

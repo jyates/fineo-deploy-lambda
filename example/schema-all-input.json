@@ -9,7 +9,7 @@
             "metric": ["create", "read", "delete", "update"]
           },
           {
-            "field": ["create", "read", "delete", "update"]
+            "field": ["create", "read", "update"]
           }
         ]
       }
