@@ -26,6 +26,7 @@ end
 params = []
 
 ingest = []
+append(ingest,'Ingest_External', "ingest")
 append(ingest,'Ingest_Raw', "raw")
 append(ingest,'Ingest_Write', "storage")
 append(ingest,'Ingest_CleanDynamo', "clean")

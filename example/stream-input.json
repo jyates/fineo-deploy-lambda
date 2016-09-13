@@ -3,7 +3,7 @@
     "stream" : {
       "info" : {
         "dir" : "/Users/jyates/dev/iot-startup/ingest/pipeline/stream-processing/target",
-        "targets" : ["raw", "storage"]
+        "targets" : ["ingest", "raw", "storage"]
       }
     }
   }

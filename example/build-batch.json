@@ -1,7 +1,0 @@
-{
-  "types": ["Batch"], "Batch": {
-  "sns-local": "tmp/out/Batch/sns-local/sns-handler-2.0-SNAPSHOT-aws.jar",
-  "sns-remote": "tmp/out/Batch/sns-remote/sns-handler-2.0-SNAPSHOT-aws.jar",
-  "launchemr": "tmp/out/Batch/launchemr/lambda-emr-launch-2.0-SNAPSHOT-aws.jar"
-}
-}
