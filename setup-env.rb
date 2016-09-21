@@ -12,7 +12,7 @@ end
 
 def append(arr, env_name, name)
   value = ENV[env_name]
-  arr << name unless value.nil?
+  arr << name unless value.nil? || value =="false"
 end
 
 def as_input(input, name, dir_key)
