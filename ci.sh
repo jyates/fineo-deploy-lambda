@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+Ingest_Source_Dir=$WORKSPACE/jars
+Schema_Source_Dir=$WORKSPACE/jars
+Batch_Processing_Parent_Dir=$WORKSPACE/jars
 current="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 source $current/.rvmrc
