@@ -3,6 +3,7 @@ set -e
 
 current="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+source $current/.rvmrc
 input=${current}/input.json
 output=${current}/built.json
 update=${current}/update.json
