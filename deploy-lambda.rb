@@ -30,13 +30,18 @@ deploy(lambda, defs, options) unless options.dryrun
 exit if options.dryrun || !options.verbose
 puts "Deployed definitions:"
 
-output = {}
-output["lambda"] = {}
-
+updates = {}
 defs.each{|d|
+  # Each definition type basically gets its own 'group'
+  parts = d.type.split /(?=[A-Z])/
+  parts.map!{|f| f.downcase}
+  name = parts.join "-"
+  # and these are all lambda updates
+  updates[name] = {"lambda" => {}} if updates[name].nil?
+  output = updates[name]
+
   definition = d.def
   set_definition(output, definition, d.path)
-
   puts d.type
   puts "  -> #{d.name}"
   puts "\t#{d.path}"
@@ -44,6 +49,6 @@ defs.each{|d|
 }
 
 File.open(options.output,"w") do |f|
-  f.write(JSON.pretty_generate(JSON.parse(output.to_json().to_s())))
+  f.write(JSON.pretty_generate(JSON.parse(updates.to_json().to_s())))
 end
 puts "[For next step] Updated lambda jars written to: #{options.output}"
