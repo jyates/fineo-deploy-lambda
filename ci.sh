@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 set -e
-set -x
-
-Ingest_Source_Dir=$WORKSPACE/jars
-Schema_Source_Dir=$WORKSPACE/jars
-Batch_Processing_Parent_Dir=$WORKSPACE/jars
 
 current="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -12,6 +7,10 @@ source $current/.rvmrc
 input=${current}/input.json
 output=${current}/built.json
 update=${current}/update.json
+
+export Ingest_Source_Dir=$WORKSPACE/jars
+export Schema_Source_Dir=$WORKSPACE/jars
+export Batch_Processing_Parent_Dir=$WORKSPACE/jars
 
 $current/setup-env.rb > ${input}
 
