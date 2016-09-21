@@ -14,7 +14,7 @@ export Batch_Processing_Parent_Dir=$WORKSPACE/jars
 
 $current/setup-env.rb > ${input}
 
-cmd="${current}/build-jar.rb --properties-dir $WORKSPACE/properties/ --source ${input} --output ${output} -v"
+cmd="${current}/build-jar.rb --vv --properties-dir $WORKSPACE/properties/ --source ${input} --output ${output} -v"
 if [ "true" = "${Dry_Run}" ]; then
   cmd="${cmd} --dry-run"
 fi
@@ -30,7 +30,7 @@ if [ ! -z ${Dry_Run} ]; then
   exit 0
 fi
 
-cmd="${current}/deploy-lambda.rb --source ${output} --output ${update} \
+cmd="${current}/deploy-lambda.rb --vv --source ${output} --output ${update} \
 --credentials ${CREDENTIALS} -v"
 $cmd
 
