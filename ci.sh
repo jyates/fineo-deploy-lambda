@@ -15,11 +15,11 @@ export Batch_Processing_Parent_Dir=$WORKSPACE/jars
 $current/setup-env.rb > ${input}
 
 cmd="${current}/build-jar.rb --source ${input} --output ${output} -v"
-if [ ! -z ${Dry_Run+x} ]; then
+if [ "true" = "${Dry_Run}" ]; then
   cmd="${cmd} --dry-run"
 fi
 
-if [ ! -z ${Testing+x} ]; then
+if [ "true" = "${Testing}" ]; then
   cmd="${cmd} --testing"
 fi
 
