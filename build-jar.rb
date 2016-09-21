@@ -22,7 +22,7 @@ file = File.read(options.source)
 sources = JSON.parse(file)
 # ensure its an array
 sources = [sources] if sources.class == Hash
-managers = []
+managers = {}
 
 sources.each{|entry|
   source = entry.shift
@@ -30,16 +30,15 @@ sources.each{|entry|
   info = source[1]["info"]
   builder = SOURCES[name]
   raise "No builder found for '#{name}'" if builder.nil?
-  managers << builder.call(info)
+  managers[name] = builder.call(info)
 }
 
-properties = load_properties(options)
-
-managers.each{|source|
+managers.each{|name, source|
+  properties = load_properties(name, options)
   build_properties(source, properties, options.testing)
 }
 
-managers.each{|source|
+managers.each{|name, source|
   print_target_properties(source, options.verbose2)
 }
 
@@ -57,7 +56,7 @@ info = {
   "types" => types
 }
 
-managers.each{|source|
+managers.each{|source_name, source|
   name = source.class.name
   types << name
   source_info = update_jars(tmp, out, source, options.verbose)

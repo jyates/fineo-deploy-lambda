@@ -37,7 +37,8 @@ module SourceHandler
       # unzip the jar into a temp directory
       unpack = File.join(tmp, source.class.name, target.name)
       FileUtils.mkdir_p unpack
-      `cd #{unpack}; jar -xf #{target.jar}`
+      result = system("cd #{unpack}; jar -xf #{target.jar}")
+      raise "Could not successfully unpack: #{target.jar}" unless result
 
       # write the properties into the property file
       hash = target.properties?

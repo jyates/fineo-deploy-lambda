@@ -31,6 +31,10 @@ module Building
         options.dryrun = true
       end
 
+      opts.on("--properties-dir DIRECTORY", "Directory containing properties for all the stacks. Stack properties expected to be named: '<stack>.json' in the directory") do |dir|
+        options.props_dir = dir
+      end
+
       opts.on("--props PROPERTIES_FILE", "Json file containing function properties.") do |props|
         options.props = props
       end
@@ -54,11 +58,20 @@ module Building
         exit
       end
     end.parse!(args)
-    options
+
+    raise "Testing only supported for a single properties file at a time! You specified a directory" if !options.props_dir.nil? && options.testing
+    return options
   end
 
-  def load_properties(options)
-    properties = JSON.parse(File.read(options.props))
+  def load_properties(name, options)
+    unless options.props.nil?
+      properties = JSON.parse(File.read(options.props))
+    else
+      # find the correct properties fiel in the directory
+      file = File.join(options.props_dir, "#{name}.json")
+      raise "Missing properties file: #{file}!" unless File.exists? file
+      properties = JSON.parse(File.read(file))
+    end
     testing = get_property(properties, TEST_KEY)
     raise "Testing property (#{TEST_KEY}) not set in properties!" if !testing && options.testing
     raise "Testing NOT specified, but found testing marker (#{TEST_KEY})!" if testing && ! options.testing

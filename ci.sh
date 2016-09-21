@@ -14,7 +14,7 @@ export Batch_Processing_Parent_Dir=$WORKSPACE/jars
 
 $current/setup-env.rb > ${input}
 
-cmd="${current}/build-jar.rb --source ${input} --output ${output} -v"
+cmd="${current}/build-jar.rb --properties-dir $WORKSPACE/properties/ --source ${input} --output ${output} -v"
 if [ "true" = "${Dry_Run}" ]; then
   cmd="${cmd} --dry-run"
 fi
