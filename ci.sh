@@ -26,7 +26,7 @@ fi
 # run the build command
 $cmd
 
-if [ ! -z ${Dry_Run} ]; then
+if [ "true" = "${Dry_Run}" ]; then
   exit 0
 fi
 
