@@ -2,26 +2,28 @@
 # Convert  environment variables into json format output dumped to the console. Its up to the caller
 # to sort the output appropriately and then use that as input to build-jar.rb
 
+# include the "lib" directory
+File.expand_path(File.join(__dir__, "lib")).tap {|pwd|
+  $LOAD_PATH.unshift(pwd) unless $LOAD_PATH.include?(pwd)
+}
+
 require 'json'
+require 'optparse'
+require 'ostruct'
 
-def simplify(hash)
-  hash.select{|k,v|
-    !v.nil?
-  }
-end
+@options  = OpenStruct.new(all: false)
+OptionParser.new do |opts|
+  opts.banner = "Usage: setup-env.rb [options]"
+  opts.separator "Setup the input file from environment variables for deploying jars"
+  opts.separator "  Options:"
 
-def append(arr, env_name, name)
-  value = ENV[env_name]
-  arr << name unless value.nil? || value =="false"
-end
+  opts.on("--deploy-all", "Ignore environment variables and just deploy all the jars. Should be used for == TESTING ==") do |t|
+      @options.all = true
+  end
+end.parse!(ARGV)
 
-def as_input(input, name, dir_key)
-  return nil if input.empty?
-  dir = ENV[dir_key]
-  raise "No source directory specified for #{name} => ENV[#{dir_key}]!" if dir.nil?
-  info = {"dir" => dir, "targets" => input}
-  {name => { "info" => info}}
-end
+require 'environment_settings'
+include EnvironmentSettings
 
 params = []
 
@@ -61,4 +63,4 @@ append(batch,'Batch_Launch_EMR_Cluster', "launchemr")
 input = as_input(batch, "batch", 'Batch_Processing_Parent_Dir')
 params << input unless input.nil?
 
-puts "#{params.to_json}"
+puts "#{JSON.pretty_generate(params)}"

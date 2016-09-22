@@ -11,7 +11,11 @@ export Ingest_Source_Dir=$WORKSPACE/jars
 export Schema_Source_Dir=$WORKSPACE/jars
 export Batch_Processing_Parent_Dir=$WORKSPACE/jars
 
-$current/setup-env.rb > ${input}
+if [ "true" = "$DEPLOY_ALL" ]; then
+  DEPLOY_ALL_FLAG="--deploy-all"
+end
+
+$current/setup-env.rb $DEPLOY_ALL_FLAG > ${input}
 
 cmd="${current}/build-jar.rb --vv --properties-dir $WORKSPACE/properties/ --source ${input} --output ${output} -v"
 if [ "true" = "${Dry_Run}" ]; then
