@@ -11,7 +11,7 @@ export Ingest_Source_Dir=$WORKSPACE/jars
 export Schema_Source_Dir=$WORKSPACE/jars
 export Batch_Processing_Parent_Dir=$WORKSPACE/jars
 
-if [ "true" = "$DEPLOY_ALL" ]; then
+if [ "true" = "$Deploy_All" ]; then
   DEPLOY_ALL_FLAG="--deploy-all"
 end
 
@@ -23,7 +23,7 @@ if [ "true" = "${Dry_Run}" ]; then
 fi
 
 if [ "true" = "${Testing}" ]; then
-  cmd="${cmd} --testing"
+  cmd="${cmd} --test"
 fi
 
 # run the build command

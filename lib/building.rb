@@ -58,8 +58,6 @@ module Building
         exit
       end
     end.parse!(args)
-
-    raise "Testing only supported for a single properties file at a time! You specified a directory" if !options.props_dir.nil? && options.testing
     return options
   end
 
