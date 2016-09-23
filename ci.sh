@@ -13,7 +13,7 @@ export Batch_Processing_Parent_Dir=$WORKSPACE/jars
 
 if [ "true" = "$Deploy_All" ]; then
   DEPLOY_ALL_FLAG="--deploy-all"
-end
+fi
 
 $current/setup-env.rb $DEPLOY_ALL_FLAG > ${input}
 
