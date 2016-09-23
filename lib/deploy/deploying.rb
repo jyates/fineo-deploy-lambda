@@ -153,7 +153,7 @@ module Deploying
       # single file specified, just load the definition as a single function
       properties = JSON.parse(File.read(options.testing))
       defs.each{|d|
-        deploy_test_function(d, properties)
+        deploy_test_function(upload, d, properties)
       }
     else
       defs.each{|d|
@@ -161,7 +161,7 @@ module Deploying
         stack_name = definition_stack_name?(d)
         file = File.join(options.testing, "#{stack_name}.json")
         properties = JSON.parse(File.read(file))
-        deploy_test_function(d, properties)
+        deploy_test_function(upload, d, properties)
       }
     end
   end
@@ -207,18 +207,18 @@ private
       expected == actual
   end
 
-  def deploy_test_function(def, properties)
-    definition = d.def
+  def deploy_test_function(upload, full_definition, properties)
+    definition = full_definition.def
     name = definition.func_name
-    lambda = props
+    lambda = properties
     definition.config_key.split(".").each{|part|
       lambda = lambda[part]
       break if lambda.nil?
     }
     raise "No property found for #{definition.config_key} in properties!" if lambda.nil?
     s3 = lambda["s3"]
-    jar = d.jar
+    jar = full_definition.jar
     path = upload.send(jar, s3["bucket"], s3["key"])
-    d.path = path
+    full_definition.path = path
   end
 end
