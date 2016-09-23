@@ -40,12 +40,13 @@ schema = []
 append(schema, 'Schema_Org_Update', "org")
 metric = []
 append(metric, 'Schema_Metric_Create', "create")
+append(metric, 'Schema_Metric_Read', "read")
 append(metric, 'Schema_Metric_Update', "update")
 append(metric, 'Schema_Metric_Delete', "delete")
-append(metric, 'Schema_Metric_Field', "field")
 schema << {"metric" => metric} unless metric.empty?
 field = []
-append(field, 'Schema_Field_Delete', "delete")
+append(field, 'Schema_Field_Create', "create")
+append(field, 'Schema_Field_Read', "read")
 append(field, 'Schema_Field_Update', "update")
 schema << {"field" => field} unless field.empty?
 
