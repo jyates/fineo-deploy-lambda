@@ -40,8 +40,8 @@ module Deploying
         options.bucket = bucket
       end
 
-      opts.on("--test PROPERTIES", "Do a testing deployment. Specify the testing properties " +
-        "file to extract the destination for each lambda function.") do |testing|
+      opts.on("--test PROPERTIES", "Do a test deployment. Specify the testing properties file or directory of stack properties" +
+        " from which extract the destination for each lambda function.") do |testing|
         options.testing = testing
       end
 
@@ -102,6 +102,12 @@ module Deploying
     defs
   end
 
+  def definition_stack_name?(definition)
+    parts = definition.type.split /(?=[A-Z])/
+    parts.map!{|f| f.downcase}
+    parts.join "-"
+  end
+
   # ensure that the current properties associated with the definition match those, if the
   # function has already been deployed
   def validate_definitions(lambda, defs, options)
@@ -126,24 +132,7 @@ module Deploying
     upload = S3Upload.new(options)
 
     # using the testing options for the lambda function
-    if options.testing
-      require 'json'
-      props = JSON.parse(File.read(options.testing))
-      defs.each{|d|
-        definition = d.def
-        name = definition.func_name
-        lambda = props
-        definition.config_key.split(".").each{|part|
-          lambda = lambda[part]
-          break if lambda.nil?
-        }
-        raise "No property found for #{definition.config_key} in properties!" if lambda.nil?
-        s3 = lambda["s3"]
-        jar = d.jar
-        path = upload.send(jar, s3["bucket"], s3["key"])
-        d.path = path
-      }
-    else
+    unless options.testing
       bucket = options.bucket
       date_dir = Time.now.to_s.gsub(" ", "_")
       defs.each{|d|
@@ -154,6 +143,25 @@ module Deploying
         path = upload.send(jar, bucket, target)
         d.path = path
         d.version = lambda.deploy(path, definition.func) if options.force_deploy
+      }
+      return
+    end
+
+    # Testing
+    require 'json'
+    if File.file?(options.testing)
+      # single file specified, just load the definition as a single function
+      properties = JSON.parse(File.read(options.testing))
+      defs.each{|d|
+        deploy_test_function(d, properties)
+      }
+    else
+      defs.each{|d|
+        # its a directory and we need to load the stack properties for each definition (lazy, but easier to verify)
+        stack_name = definition_stack_name?(d)
+        file = File.join(options.testing, "#{stack_name}.json")
+        properties = JSON.parse(File.read(file))
+        deploy_test_function(d, properties)
       }
     end
   end
@@ -197,5 +205,20 @@ private
   def verify(func_name, name, expected, actual)
     raise "#{func_name}:: Mismatch for #{name}. Expected: #{expected}. Actual: #{actual}" unless
       expected == actual
-  end 
+  end
+
+  def deploy_test_function(def, properties)
+    definition = d.def
+    name = definition.func_name
+    lambda = props
+    definition.config_key.split(".").each{|part|
+      lambda = lambda[part]
+      break if lambda.nil?
+    }
+    raise "No property found for #{definition.config_key} in properties!" if lambda.nil?
+    s3 = lambda["s3"]
+    jar = d.jar
+    path = upload.send(jar, s3["bucket"], s3["key"])
+    d.path = path
+  end
 end

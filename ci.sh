@@ -35,6 +35,12 @@ fi
 
 cmd="${current}/deploy-lambda.rb --vv --source ${output} --output ${update} \
 --credentials ${CREDENTIALS} -v"
+
+
+if [ "true" = "${Testing}" ]; then
+  cmd="${cmd} --test $PROPS_DIR"
+fi
+
 $cmd
 
 echo

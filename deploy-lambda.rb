@@ -33,9 +33,7 @@ puts "Deployed definitions:"
 updates = {}
 defs.each{|d|
   # Each definition type basically gets its own 'group'
-  parts = d.type.split /(?=[A-Z])/
-  parts.map!{|f| f.downcase}
-  name = parts.join "-"
+  name = definition_stack_name?(d)
   # and these are all lambda updates
   updates[name] = {"lambda" => {}} if updates[name].nil?
   output = updates[name]
