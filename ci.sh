@@ -17,7 +17,7 @@ fi
 
 $current/setup-env.rb $DEPLOY_ALL_FLAG > ${input}
 
-cmd="${current}/build-jar.rb --vv --properties-dir $WORKSPACE/properties/ --source ${input} --output ${output} -v"
+cmd="${current}/build-jar.rb --vv --properties-dir $PROPS_DIR --source ${input} --output ${output} -v"
 if [ "true" = "${Dry_Run}" ]; then
   cmd="${cmd} --dry-run"
 fi
