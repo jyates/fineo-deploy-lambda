@@ -37,7 +37,7 @@ input = as_input(ingest, "stream", 'Ingest_Source_Dir')
 params << input unless input.nil?
 
 schema = []
-append(schema, 'Schema_Org_Create', "create")
+append(schema, 'Schema_Org_Update', "org")
 metric = []
 append(metric, 'Schema_Metric_Create', "create")
 append(metric, 'Schema_Metric_Update', "update")
@@ -50,6 +50,11 @@ append(field, 'Schema_Field_Update', "update")
 schema << {"field" => field} unless field.empty?
 
 input = as_input(schema, "schema", 'Schema_Source_Dir')
+params << input unless input.nil?
+
+schema_internal = []
+append(schema_internal, 'Internal_Schema_Org_Create', "org")
+input = as_input(schema_internal, "schema-internal", 'Schema_Source_Dir')
 params << input unless input.nil?
 
 batch = []
