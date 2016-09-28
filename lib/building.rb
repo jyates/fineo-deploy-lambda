@@ -20,6 +20,7 @@ module Building
       opts.separator "  Options:"
 
       opts.on("--source FILE", "JSON file defining the sources we will transform") do |source|
+        puts "Source set to: #{source}"
         options.source = source
       end
 
