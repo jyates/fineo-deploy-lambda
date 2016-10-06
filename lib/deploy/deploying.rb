@@ -139,7 +139,7 @@ module Deploying
         definition = d.def
         jar = d.jar
         jar_name = File.basename(jar)
-        target = File.join(d.type, date_dir, d.name, jar_name)
+        target = File.join(d.type, d.name, date_dir, jar_name)
         path = upload.send(jar, bucket, target)
         d.path = path
         d.version = lambda.deploy(path, definition.func) if options.force_deploy
