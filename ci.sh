@@ -34,8 +34,15 @@ if [ "true" = "${Dry_Run}" ]; then
   exit 0
 fi
 
-cmd="${current}/deploy-lambda.rb --vv --source ${output} --output ${update} \
---credentials ${CREDENTIALS} -v"
+if [ "x" != "${CREDENTIALS}x" ]; then
+  CREDS_PARAM="--credentials ${CREDENTIALS}"
+fi
+
+cmd="${current}/deploy-lambda.rb --vv \
+  --source ${output} \
+  --output ${update}  \
+  ${CREDS_PARAM}
+  -v"
 
 
 if [ "true" = "${Testing}" ]; then
