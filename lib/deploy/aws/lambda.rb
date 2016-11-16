@@ -14,8 +14,7 @@ class LambdaAws
     @creds = load_creds(options.credentials)
     @client =  Aws::Lambda::Client.new(
                     region: options.region,
-                    access_key_id: @creds['access_key_id'],
-                    secret_access_key: @creds['secret_access_key'],
+                    credentials: @creds,
                     validate_params: true)
     @functions = {}
   end
