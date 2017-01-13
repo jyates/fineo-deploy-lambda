@@ -40,7 +40,9 @@ params << input unless input.nil?
 # Schema
 schema = []
 append(schema, 'Schema_Org_Update', "org")
+append(schema, 'Schema_Metrics_Read', "metrics")
 metric = []
+# this creates a 'name key' of the form "metric-create"
 append(metric, 'Schema_Metric_Create', "create")
 append(metric, 'Schema_Metric_Read', "read")
 append(metric, 'Schema_Metric_Update', "update")
