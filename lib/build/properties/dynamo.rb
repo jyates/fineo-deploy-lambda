@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require_relative "properties"
-
 class Properties::Dynamo
 
   attr_reader :opts
@@ -13,8 +11,7 @@ class Properties::Dynamo
   end
 
   def withSchemaStore
-    @opts << ArgOpts.new("dynamo.schema-store", "schema-customer",
-      table_prop?("SchemaStore", "name"))
+    @opts << ArgOpts.new("dynamo.schema-store", "schema-customer", table_prop?("SchemaStore", "name"))
     self
   end
 
@@ -32,11 +29,29 @@ class Properties::Dynamo
     self
   end
 
+  def withUserInfoMgmt
+    @opts +=[
+              ArgOpts.new("mgmt.user.dynamo.table", "user-info", user?("name")),
+              ArgOpts.new("mgmt.tenant.dynamo.table", "tenant-info", tenant?("name")),
+            ]
+    self
+  end
+
+  def withDeviceMgmt
+    @opts +=[
+              ArgOpts.new("mgmt.device.dynamo.table", "device-info", table_prop?("DeviceInfo", "name")),
+            ]
+    self
+  end
+
   def addProps(manager)
     manager.addAll(@opts)
   end
 
 private
+
+  # Helper methods
+  # - so we don't need to keep typing table_prop?(table name/reference, property value)
 
   def ingest?(prop)
     table_prop?("CustomerIngest", prop)
@@ -46,6 +61,27 @@ private
     table_prop?("BatchManifest", prop)
   end
 
+  def user?(prop)
+    table_prop?("UserInfo", prop)
+  end
+
+  def tenant?(prop)
+    table_prop?("TenantInfo", prop)
+  end
+
+  # Actual value of the property is from the the configuration for the given dynamo table name(table ref)'s property.
+  # e.g. table_prop?("BatchManifest", "throughput.write") will lookup in the configuration
+  #
+  # "dynamo": {
+  # "tables": {
+  #   "BatchManifest": {
+  #     "name": "batch-manifest",
+  #     "throughput": {
+  #       "write": 1,  <--------------- this property
+  #       "read": 1
+  #     }
+  #   }
+  # }
   def table_prop?(tableref, prop)
     Proc.new{|props|
       get_table_property_impl(props, tableref, prop)

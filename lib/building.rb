@@ -3,7 +3,6 @@ require 'util/files'
 require 'source_handler'
 require 'ostruct'
 require 'optparse'
-require 'sources'
 require 'json'
 
 module Building
@@ -66,7 +65,7 @@ module Building
     unless options.props.nil?
       properties = JSON.parse(File.read(options.props))
     else
-      # find the correct properties fiel in the directory
+      # find the correct properties file in the directory
       file = File.join(options.props_dir, "#{name}.json")
       raise "Missing properties file: #{file}!" unless File.exists? file
       properties = JSON.parse(File.read(file))

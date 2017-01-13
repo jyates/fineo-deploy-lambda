@@ -29,9 +29,4 @@ class Properties::Api
   end
 
 private
-
-  def get_property(props, key)
-
-
-  end
 end

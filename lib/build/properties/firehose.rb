@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require_relative "properties"
-
 class Properties::Firehose
 
   def self.addProps(manager)

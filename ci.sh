@@ -11,6 +11,7 @@ update=${current}/update.json
 export Ingest_Source_Dir=$WORKSPACE/jars
 export Schema_Source_Dir=$WORKSPACE/jars
 export Batch_Processing_Parent_Dir=$WORKSPACE/jars
+export Meta_Dir=$WORKSPACE/jars
 
 if [ "true" = "$Deploy_All" ]; then
   DEPLOY_ALL_FLAG="--deploy-all"

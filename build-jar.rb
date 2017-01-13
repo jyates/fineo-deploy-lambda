@@ -24,6 +24,7 @@ sources = JSON.parse(file)
 sources = [sources] if sources.class == Hash
 managers = {}
 
+require 'sources'
 sources.each{|entry|
   source = entry.shift
   name = source[0]

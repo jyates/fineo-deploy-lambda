@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require_relative "properties"
-
 class Properties::BatchProcessor
 
   def self.addProps(manager)
