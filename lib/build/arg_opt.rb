@@ -29,7 +29,7 @@ class ArgOpts
   # Lookup the [source] (split on '.') in the properties.
   def ArgOpts.source(key, value, source, desc)
     ArgOpts.new(key, value, ->(props) {
-      ref = ArgOpts.get_reference(props, key)
+      ref = ArgOpts.get_reference(props, source)
       if ref.nil?
         puts "WARN: #{key} not found in properties: #{desc}"
         return value
@@ -86,7 +86,13 @@ private
   def ArgOpts.get_reference(props, key)
     parts = key.split "."
     type = parts.shift
-    properties = type.empty? ? props : props[type]["properties"]
+    if type.empty?
+      properties = props
+    else
+      p = props[type]
+      puts "Type properties are nil for key: #{key}" if p.nil?
+      properties = p["properties"]
+    end
     ArgOpts.depth_search(parts, properties)
   end
 

@@ -8,8 +8,8 @@ class Properties::Iam
   end
 
   def withDeviceKeyMgmt
-    @opts << ArgOpts.source("fineo.mgmt.device.group.name", "--NO Group Loaded In Prop Gen",
-                            "iam.devices.group.name", "IAM group to use for device access"
+    @opts << ArgOpts.source("mgmt.device.group.name", "--NO Group Loaded In Prop Gen",
+                            "iam.devices.group.name", "IAM group to use for device access")
     self
   end
 

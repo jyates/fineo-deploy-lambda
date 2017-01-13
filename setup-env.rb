@@ -78,12 +78,12 @@ meta = []
 user = []
 append(user,'User_Info', "user")
 append(user,'Tenant_Info', "tenant")
-meta << {"user-info" => user} unless user.empty?
+meta << {"meta" => user} unless user.empty?
 
 device = []
 append(device,'Device_Mgmt', "devices")
 append(device,'Device_Key_Mgmt', "keys")
-meta << {"device" => device} unless devices.empty?
+meta << {"device" => device} unless device.empty?
 input = as_input(meta, "meta", 'Meta_Dir')
 params << input unless input.nil?
 
