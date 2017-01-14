@@ -3,6 +3,9 @@ class Definition
 
   attr_reader :name, :properties, :func_name, :config_key
 
+  # * name - source environment name, where parent segments are separated by '-'
+  # * func_name - name of the object definition (not the actual, eventual function name in AWS)
+  # * properties - property definitions to add to the resulting jar
   def initialize(name, func_name, properties, config_key=nil)
     @name = name
     @path = name.split("-")
