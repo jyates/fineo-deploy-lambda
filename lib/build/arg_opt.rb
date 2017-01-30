@@ -26,12 +26,23 @@ class ArgOpts
      })
   end
 
-  # Lookup the [source] (split on '.') in the properties.
-  def ArgOpts.source(key, value, source, desc)
+  # Lookup the [source] (split on '.') in the properties of the source.
+  # For example, source = 'some.key' finds:
+  # ...
+  #  "source": {
+  #   "properties": {
+  #     "key": "value"    <---------- this value
+  #   }}
+  def ArgOpts.source(key, value, source, desc, fail_on_missing=false)
     ArgOpts.new(key, value, ->(props) {
       ref = ArgOpts.get_reference(props, source)
       if ref.nil?
-        puts "WARN: #{key} not found in properties: #{desc}"
+        msg = "Missing property: #{source} to fill #{key} (#{desc})"
+        if fail_on_missing
+          raise msg
+        end
+
+        puts "WARN: #{msg}"
         return value
       end
       ref
@@ -90,7 +101,7 @@ private
       properties = props
     else
       p = props[type]
-      puts "Type properties are nil for key: #{key}" if p.nil?
+      return nil if p.nil?
       properties = p["properties"]
     end
     ArgOpts.depth_search(parts, properties)
