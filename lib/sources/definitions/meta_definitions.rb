@@ -9,7 +9,8 @@ module MetaDefinitions
   TenantProperties = [
     # Access to the user/tenant info table
     Properties::Dynamo.new().withUserInfoMgmt(),
-    Properties::InternalApi.new().withCreateSchema()
+    Properties::InternalApi.new().withCreateSchema().withUsagePlan(),
+    Properties::Stripe.key()
   ]
 
   DeviceProperties = [
