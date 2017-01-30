@@ -6,6 +6,11 @@ require 'sources/definitions/source_loader'
 module MetaDefinitions
 
   UserProperties = [Properties::Dynamo.new().withUserInfoMgmt()]
+  TenantProperties = [
+    # Access to the user/tenant info table
+    Properties::Dynamo.new().withUserInfoMgmt(),
+    Properties::InternalApi.new().withCreateSchema()
+  ]
 
   DeviceProperties = [
     # access to the device table
