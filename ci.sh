@@ -41,8 +41,7 @@ fi
 cmd="${current}/deploy-lambda.rb --vv \
   --source ${output} \
   --output ${update}  \
-  ${CREDS_PARAM}
-  -v"
+  ${CREDS_PARAM}"
 
 
 if [ "true" = "${Testing}" ]; then
