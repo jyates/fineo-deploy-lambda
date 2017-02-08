@@ -79,8 +79,11 @@ params << input unless input.nil?
 meta = []
 user = []
 append(user,'User_Info', "user")
-append(user,'Tenant_Info', "tenant")
 meta << {"meta" => user} unless user.empty?
+tenant = []
+append(tenant,'Tenant_Info', "info")
+append(tenant,'Tenant_Create', "create")
+meta << {"tenant" => tenant} unless tenant.empty?
 
 device = []
 append(device,'Device_Mgmt', "devices")
